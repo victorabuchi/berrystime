@@ -1,0 +1,207 @@
+.page {
+  background: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 40px;
+  color: #111111;
+}
+
+.main {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 28px 16px;
+}
+
+.logoWrap {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.logoBerry {
+  color: #2d6a2d;
+}
+
+.logoStime {
+  color: #000000;
+}
+
+.tagline {
+  text-align: center;
+  font-size: 13px;
+  color: #888888;
+  margin-bottom: 28px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 12px;
+  font-size: 16px;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  background: #fafafa;
+  color: #111111;
+  outline: none;
+  font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.input:focus {
+  border-color: #2d6a2d;
+  box-shadow: 0 0 0 2px rgba(45, 106, 45, 0.15);
+}
+
+.warning {
+  font-size: 12px;
+  color: #c0392b;
+  font-weight: 500;
+}
+
+.calcButton {
+  width: 100%;
+  padding: 14px;
+  background: #2d6a2d;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 4px;
+  font-family: inherit;
+  letter-spacing: 0.02em;
+}
+
+.calcButton:active {
+  background: #235223;
+}
+
+.results {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  border-radius: 10px;
+  padding: 16px;
+  border-width: 1.5px;
+  border-style: solid;
+}
+
+.cardWhite {
+  background: #ffffff;
+  border-color: #2d6a2d;
+}
+
+.cardOrange {
+  background: #fff3e0;
+  border-color: #e67e22;
+}
+
+.cardBlue {
+  background: #e3f2fd;
+  border-color: #1976d2;
+}
+
+.cardTitle {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #222222;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  min-width: 380px;
+}
+
+.table th {
+  text-align: left;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.05);
+  font-weight: 600;
+  color: #444444;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 7px 8px;
+  color: #222222;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  white-space: nowrap;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.summaryGrid {
+  display: flex;
+  flex-direction: column;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.summaryRow:last-child {
+  border-bottom: none;
+}
+
+.summaryTotal .summaryLabel,
+.summaryTotal .summaryValue {
+  font-weight: 700;
+}
+
+.summaryLabel {
+  font-size: 14px;
+  color: #333333;
+}
+
+.summaryValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111111;
+}
+
+.copyNote {
+  margin-top: 12px;
+  font-size: 11px;
+  color: #888888;
+  font-style: italic;
+  text-align: center;
+}
