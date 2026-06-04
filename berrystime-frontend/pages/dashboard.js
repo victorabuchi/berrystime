@@ -45,7 +45,8 @@ export default function Dashboard() {
       const res = await api.get('/api/timesheet/' + month + '/' + year)
       const map = {}
       res.data.entries.forEach(e => {
-        const day = new Date(e.entry_date).getDate()
+        const d = new Date(e.entry_date)
+        const day = d.getUTCDate()
         map[day] = e
       })
       setEntries(map)
@@ -102,6 +103,13 @@ export default function Dashboard() {
   const days = getDaysInMonth(month, year)
   const inp = { width: '100%', padding: '10px 12px', fontSize: '15px', border: '1px solid #ccc', borderRadius: '8px', boxSizing: 'border-box', fontFamily: 'inherit' }
 
+  const thW = { border: '1px solid #333', padding: '6px 8px', textAlign: 'left', whiteSpace: 'nowrap', background: '#f0f0f0' }
+  const tdW = { border: '1px solid #333', padding: '8px' }
+  const thO = { border: '1px solid #c97d00', padding: '6px 8px', textAlign: 'left', whiteSpace: 'nowrap', background: '#ffe0a0' }
+  const tdO = { border: '1px solid #c97d00', padding: '8px' }
+  const thB = { border: '1px solid #1565c0', padding: '6px 8px', textAlign: 'center', background: '#bbdefb' }
+  const tdB = { border: '1px solid #1565c0', padding: '8px', textAlign: 'center' }
+
   return (
     <>
       <Head><title>Berrystime — My Timesheet</title><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
@@ -117,12 +125,12 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div style={{ maxWidth: '480px', margin: '0 auto', padding: '20px 16px' }}>
+        <div style={{ maxWidth: '700px', margin: '0 auto', padding: '20px 16px' }}>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-            <button onClick={() => { if (month === 1) { setMonth(12); setYear(y => y-1) } else setMonth(m => m-1) }} style={{ padding: '6px 12px', border: '1px solid #ccc', borderRadius: '6px', background: '#fff', cursor: 'pointer', fontSize: '16px' }}>{'<'}</button>
+            <button onClick={() => { if (month === 1) { setMonth(12); setYear(y => y-1) } else setMonth(m => m-1) }} style={{ padding: '6px 14px', border: '1px solid #ccc', borderRadius: '6px', background: '#fff', cursor: 'pointer', fontSize: '16px' }}>{'<'}</button>
             <div style={{ flex: 1, textAlign: 'center', fontWeight: '700', fontSize: '16px' }}>{MONTHS[month-1]} {year}</div>
-            <button onClick={() => { if (month === 12) { setMonth(1); setYear(y => y+1) } else setMonth(m => m+1) }} style={{ padding: '6px 12px', border: '1px solid #ccc', borderRadius: '6px', background: '#fff', cursor: 'pointer', fontSize: '16px' }}>{'>'}</button>
+            <button onClick={() => { if (month === 12) { setMonth(1); setYear(y => y+1) } else setMonth(m => m+1) }} style={{ padding: '6px 14px', border: '1px solid #ccc', borderRadius: '6px', background: '#fff', cursor: 'pointer', fontSize: '16px' }}>{'>'}</button>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -136,16 +144,18 @@ export default function Dashboard() {
                       <span style={{ fontWeight: '700', fontSize: '15px' }}>Day {day}</span>
                       {hasEntry && (
                         <span style={{ marginLeft: '8px', fontSize: '13px', color: '#2d6a2d' }}>
-                          {entry.actual_start?.slice(0,5)} → {entry.actual_finish?.slice(0,5)} | {entry.total_hours}h | {entry.what_work}
+                          {entry.actual_start?.slice(0,5)} to {entry.actual_finish?.slice(0,5)} | Total: {entry.total_hours} | {entry.what_work}
                         </span>
                       )}
                       {!hasEntry && <span style={{ marginLeft: '8px', fontSize: '13px', color: '#aaa' }}>No entry</span>}
                     </div>
                     <div style={{ display: 'flex', gap: '6px' }}>
                       {hasEntry && (
-                        <button onClick={() => setSelectedEntry(selectedEntry === day ? null : day)} style={{ padding: '5px 10px', background: '#e8f5e9', border: '1px solid #2d6a2d', borderRadius: '6px', fontSize: '12px', color: '#2d6a2d', cursor: 'pointer' }}>View</button>
+                        <button onClick={() => setSelectedEntry(selectedEntry === day ? null : day)} style={{ padding: '5px 10px', background: '#e8f5e9', border: '1px solid #2d6a2d', borderRadius: '6px', fontSize: '12px', color: '#2d6a2d', cursor: 'pointer' }}>
+                          {selectedEntry === day ? 'Hide' : 'View'}
+                        </button>
                       )}
-                      <button onClick={() => openEdit(day)} style={{ padding: '5px 10px', background: '#2d6a2d', border: 'none', borderRadius: '6px', fontSize: '12px', color: '#fff', cursor: 'pointer' }}>{hasEntry ? 'Edit' : '+ Add'}</button>
+                      <button onClick={() => openEdit(editDay === day ? null : day)} style={{ padding: '5px 10px', background: '#2d6a2d', border: 'none', borderRadius: '6px', fontSize: '12px', color: '#fff', cursor: 'pointer' }}>{hasEntry ? 'Edit' : '+ Add'}</button>
                     </div>
                   </div>
 
@@ -173,21 +183,117 @@ export default function Dashboard() {
                   )}
 
                   {selectedEntry === day && hasEntry && (
-                    <div style={{ marginTop: '12px', borderTop: '1px solid #eee', paddingTop: '12px' }}>
-                      <div style={{ background: '#fff', border: '2px solid #2d6a2d', borderRadius: '8px', padding: '10px', marginBottom: '8px' }}>
-                        <p style={{ fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>White Paper — Work Paid by Hour</p>
-                        <p style={{ fontSize: '12px', margin: '2px 0' }}>Start: <b>{entry.white_start?.slice(0,5)}</b> | Finish: <b>{entry.white_finish?.slice(0,5)}</b> | Eating break: <b>0:30</b> | Hours: <b>7:30</b></p>
-                        <p style={{ fontSize: '12px', margin: '2px 0' }}>What work: <b>{entry.what_work}</b></p>
-                      </div>
-                      <div style={{ background: '#fff3e0', border: '2px solid #e67e22', borderRadius: '8px', padding: '10px', marginBottom: '8px' }}>
-                        <p style={{ fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>Orange Paper — Extrawork Paid by Hour</p>
-                        <p style={{ fontSize: '12px', margin: '2px 0' }}>Start: <b>{entry.orange_start?.slice(0,5)}</b> | Finish: <b>{entry.orange_finish?.slice(0,5)}</b> | Break: <b>0:15</b> | Hours: <b>{entry.orange_hours}</b></p>
-                        <p style={{ fontSize: '12px', margin: '2px 0' }}>What work: <b>{entry.what_work}</b></p>
-                      </div>
-                      <div style={{ background: '#e3f2fd', border: '2px solid #1976d2', borderRadius: '8px', padding: '10px' }}>
-                        <p style={{ fontSize: '12px', fontWeight: '700', marginBottom: '6px' }}>Weekly Summary</p>
-                        <p style={{ fontSize: '12px', margin: '2px 0' }}>Working hours: <b>7:30</b> | Extra hours: <b>{entry.orange_hours}</b> | Total: <b>{entry.total_hours}</b></p>
-                      </div>
+                    <div style={{ marginTop: '12px', borderTop: '1px solid #eee', paddingTop: '12px', overflowX: 'auto' }}>
+
+                      <p style={{ fontSize: '12px', fontWeight: '700', marginBottom: '4px' }}>WORK PAID BY THE HOUR</p>
+                      <p style={{ fontSize: '11px', color: '#555', marginBottom: '6px' }}>8 HOURS PER DAY / 40 HOURS PER WEEK</p>
+                      <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: '540px', fontSize: '12px', marginBottom: '6px' }}>
+                        <thead>
+                          <tr>
+                            <th style={thW}>Date</th>
+                            <th style={thW}>Start</th>
+                            <th style={thW}>Finish</th>
+                            <th style={thW}>Must have Eating break</th>
+                            <th style={thW}>Extra Breaks</th>
+                            <th style={thW}>Hours minus breaks</th>
+                            <th style={thW}>What work</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td style={tdW}>{day}</td>
+                            <td style={tdW}>{entry.white_start?.slice(0,5)}</td>
+                            <td style={tdW}>{entry.white_finish?.slice(0,5)}</td>
+                            <td style={{ ...tdW, textAlign: 'center' }}>30 min</td>
+                            <td style={tdW}></td>
+                            <td style={{ ...tdW, fontWeight: '700', color: '#2d6a2d' }}>7:30</td>
+                            <td style={tdW}>{entry.what_work}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p style={{ fontSize: '11px', color: '#666', marginBottom: '16px', fontStyle: 'italic' }}>When you have worked 4 hours, You need to have an eating break, minimum of 30 mins. START WORK 9:00, 9:15, 9:30 or 9:45.</p>
+
+                      <p style={{ fontSize: '12px', fontWeight: '700', marginBottom: '4px', color: '#b45309' }}>EXTRAWORK PAID BY THE HOUR</p>
+                      <p style={{ fontSize: '11px', color: '#555', marginBottom: '6px' }}>MAXIMUM 3 HOURS PER DAY (MONDAY-FRIDAY) | MAXIMUM 11 HOURS PER DAY (SATURDAY)</p>
+                      <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: '540px', fontSize: '12px', marginBottom: '6px', background: '#fffbf0' }}>
+                        <thead>
+                          <tr>
+                            <th style={thO}>Date</th>
+                            <th style={thO}>Start</th>
+                            <th style={thO}>Finish</th>
+                            <th style={thO}>Break</th>
+                            <th style={thO}>Hours minus breaks</th>
+                            <th style={thO}>What work</th>
+                            <th style={thO}>Signature</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td style={tdO}>{day}</td>
+                            <td style={tdO}>{entry.orange_start?.slice(0,5)}</td>
+                            <td style={tdO}>{entry.orange_finish?.slice(0,5)}</td>
+                            <td style={{ ...tdO, textAlign: 'center' }}>0:15</td>
+                            <td style={{ ...tdO, fontWeight: '700', color: '#b45309' }}>{entry.orange_hours}</td>
+                            <td style={tdO}>{entry.what_work}</td>
+                            <td style={tdO}></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p style={{ fontSize: '11px', color: '#666', marginBottom: '16px', fontStyle: 'italic' }}>Start work 9:00, 9:15, 9:30 or 9:45. Work does not start 9:05, 9:10, 9:20, 9:25 etc.</p>
+
+                      <p style={{ fontSize: '12px', fontWeight: '700', marginBottom: '6px', color: '#1565c0' }}>WEEKLY SUMMARY</p>
+                      <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: '540px', fontSize: '12px', marginBottom: '6px', background: '#f0f7ff' }}>
+                        <thead>
+                          <tr>
+                            <th style={{ ...thB, textAlign: 'left' }}>Type</th>
+                            <th style={thB}>Mon</th>
+                            <th style={thB}>Tue</th>
+                            <th style={thB}>Wed</th>
+                            <th style={thB}>Thur</th>
+                            <th style={thB}>Fri</th>
+                            <th style={thB}>Sat (max 11)</th>
+                            <th style={thB}>Sun</th>
+                            <th style={thB}>Total hours</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td style={{ ...tdB, textAlign: 'left', fontWeight: '600' }}>Working hours (max 8)</td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={{ ...tdB, color: '#999' }}>X</td>
+                            <td style={{ ...tdB, fontWeight: '700' }}>7:30</td>
+                          </tr>
+                          <tr>
+                            <td style={{ ...tdB, textAlign: 'left', fontWeight: '600' }}>Extra hours (max 3)</td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={{ ...tdB, color: '#999' }}>X</td>
+                            <td style={{ ...tdB, fontWeight: '700', color: '#1565c0' }}>{entry.orange_hours}</td>
+                          </tr>
+                          <tr style={{ background: '#e3f2fd' }}>
+                            <td style={{ ...tdB, textAlign: 'left', fontWeight: '700' }}>Total</td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={tdB}></td>
+                            <td style={{ ...tdB, color: '#999' }}>X</td>
+                            <td style={{ ...tdB, fontWeight: '700', color: '#1565c0', fontSize: '14px' }}>{entry.total_hours}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p style={{ fontSize: '11px', color: '#666', fontStyle: 'italic', marginBottom: '8px' }}>Copy these values to your paper forms. Yes, I want to work extra hours.</p>
+
                     </div>
                   )}
                 </div>
