@@ -9,8 +9,8 @@ fastify.register(require('@fastify/cors'), {
     const allowed = [
       'http://localhost:4004',
       'https://berrystime.onrender.com',
-      'https://berrystime.fi',
-      'https://www.berrystime.fi'
+      'https://rannikon.com',
+      'https://www.rannikon.com'
     ]
     if (!origin || allowed.includes(origin)) {
       callback(null, true)
