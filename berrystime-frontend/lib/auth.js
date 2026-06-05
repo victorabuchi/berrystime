@@ -1,22 +1,22 @@
 export function getToken() {
   if (typeof window === 'undefined') return null
-  return localStorage.getItem('berrystime_token')
+  return localStorage.getItem('rannikon_token')
 }
 
 export function getWorker() {
   if (typeof window === 'undefined') return null
-  const w = localStorage.getItem('berrystime_worker')
+  const w = localStorage.getItem('rannikon_worker')
   return w ? JSON.parse(w) : null
 }
 
 export function saveAuth(token, worker) {
-  localStorage.setItem('berrystime_token', token)
-  localStorage.setItem('berrystime_worker', JSON.stringify(worker))
+  localStorage.setItem('rannikon_token', token)
+  localStorage.setItem('rannikon_worker', JSON.stringify(worker))
 }
 
 export function clearAuth() {
-  localStorage.removeItem('berrystime_token')
-  localStorage.removeItem('berrystime_worker')
+  localStorage.removeItem('rannikon_token')
+  localStorage.removeItem('rannikon_worker')
 }
 
 export function isLoggedIn() {

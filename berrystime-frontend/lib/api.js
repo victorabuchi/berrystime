@@ -7,7 +7,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('berrystime_token')
+    const token = localStorage.getItem('rannikon_token')
     if (token) config.headers.Authorization = 'Bearer ' + token
   }
   return config
@@ -18,8 +18,8 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('berrystime_token')
-        localStorage.removeItem('berrystime_worker')
+        localStorage.removeItem('rannikon_token')
+        localStorage.removeItem('rannikon_worker')
         window.location.href = '/login'
       }
     }

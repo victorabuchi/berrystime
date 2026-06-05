@@ -48,7 +48,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Berrystime</title>
+        <title>Rannikon</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <div style={{ background: '#fff', minHeight: '100vh', padding: '24px 16px' }}>

@@ -454,11 +454,11 @@ export default function Dashboard() {
 
   return (
     <>
-      <Head><title>Berrystime</title><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
+      <Head><title>Rannikon</title><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
       <div style={{ background: '#f5f5f5', minHeight: '100vh' }}>
 
         <div style={{ background: '#2d6a2d', padding: '10px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100 }}>
-          <h1 style={{ fontSize: '20px', fontWeight: '700', margin: 0, color: '#fff' }}>Berrystime</h1>
+          <h1 style={{ fontSize: '20px', fontWeight: '700', margin: 0, color: '#fff' }}>Rannikon</h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {worker && <span style={{ fontSize: '13px', color: '#cfffcf' }}>#{worker.work_number} {worker.full_name}</span>}
             <button onClick={logout} style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#fff' }}>Sign out</button>
