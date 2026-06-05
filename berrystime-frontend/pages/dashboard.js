@@ -242,12 +242,12 @@ export default function Dashboard() {
         key={tab}
         onClick={() => setActiveTab(tab)}
         style={{
-          width: '100%', padding: '10px 8px', textAlign: 'left', borderRadius: '6px',
-          fontSize: '12px', fontWeight: '600', cursor: 'pointer', border: 'none',
+          padding: '6px 10px', textAlign: 'center', borderRadius: '6px',
+          fontSize: '11px', fontWeight: '600', cursor: 'pointer', border: 'none',
           background: activeTab === tab ? '#2d6a2d' : '#fff',
           color: activeTab === tab ? '#fff' : '#333',
-          borderLeft: activeTab === tab ? '3px solid #1a4a1a' : '1px solid #ddd',
-          marginBottom: '4px'
+          border: activeTab === tab ? 'none' : '1px solid #ddd',
+          whiteSpace: 'nowrap'
         }}
       >
         {label}
@@ -256,9 +256,9 @@ export default function Dashboard() {
     )
 
     return (
-      <div style={{ display: 'flex', gap: '0', border: '1px solid #ccc', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0', border: '1px solid #ccc', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
 
-        <div style={{ width: '150px', minWidth: '150px', background: '#f5f5f5', borderRight: '1px solid #ccc', padding: '12px 8px', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ background: '#f5f5f5', borderBottom: '1px solid #ccc', padding: '8px', display: 'flex', flexDirection: 'row', gap: '6px', flexWrap: 'wrap' }}>
           <p style={{ fontSize: '11px', fontWeight: '700', color: '#555', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Papers</p>
           {navBtn('white', 'White Paper', 'Work paid by hour')}
           {navBtn('orange', 'Orange Paper', 'Extrawork')}
