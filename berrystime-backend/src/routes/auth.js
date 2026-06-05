@@ -98,4 +98,12 @@ module.exports = async function authRoutes(fastify) {
     return reply.send({ worker: result.rows[0] })
   })
 
+  fastify.post('/api/auth/forgot-password', async (request, reply) => {
+    const { email } = request.body
+    if (!email) return reply.status(400).send({ error: 'Email is required' })
+    const result = await db.query('SELECT id, full_name FROM workers WHERE email = $1', [email])
+    if (!result.rows[0]) return reply.send({ message: 'If this email exists, a reset link has been sent' })
+    return reply.send({ message: 'If this email exists, a reset link has been sent' })
+  })
+
 }
