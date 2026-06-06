@@ -22,31 +22,38 @@ export default function AdminPanel() {
 
   useEffect(() => {
     if (!isLoggedIn()) { router.push('/login'); return }
-    const w = getWorker()
-    if (w?.role !== 'admin') { router.push('/dashboard'); return }
-    setWorker(w)
-    loadData()
+    api.get('/api/auth/me')
+      .then(res => {
+        const w = res.data.worker
+        if (w?.role !== 'admin') { router.push('/dashboard'); return }
+        setWorker(w)
+        saveAuth(localStorage.getItem('rannikon_token'), w)
+        setLoading(true)
+        Promise.all([api.get('/api/admin/workers'), api.get('/api/admin/stats')])
+          .then(([workersRes, statsRes]) => {
+            setWorkers(workersRes.data.workers)
+            setStats(statsRes.data)
+          })
+          .catch(err => { if (err.response?.status === 403) router.push('/dashboard') })
+          .finally(() => setLoading(false))
+      })
+      .catch(() => router.push('/login'))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    if (selectedWorker) loadEntries(selectedWorker.id)
+    if (!selectedWorker) return
+    api.get(`/api/admin/workers/${selectedWorker.id}/timesheet/${month}/${year}`)
+      .then(res => {
+        const map = {}
+        res.data.entries.forEach(e => {
+          const day = parseInt(e.entry_date.split('T')[0].split('-')[2])
+          map[day] = e
+        })
+        setEntries(map)
+      })
+      .catch(() => console.error('Failed to load entries'))
   }, [month, year, selectedWorker])
-
-  async function loadData() {
-    setLoading(true)
-    try {
-      const [workersRes, statsRes] = await Promise.all([
-        api.get('/api/admin/workers'),
-        api.get('/api/admin/stats')
-      ])
-      setWorkers(workersRes.data.workers)
-      setStats(statsRes.data)
-    } catch (err) {
-      if (err.response?.status === 403) router.push('/dashboard')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   async function loadEntries(workerId) {
     try {

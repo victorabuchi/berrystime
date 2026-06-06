@@ -80,7 +80,8 @@ module.exports = async function authRoutes(fastify) {
         id: worker.id,
         work_number: worker.work_number,
         full_name: worker.full_name,
-        email: worker.email
+        email: worker.email,
+        role: worker.role
       }
     })
   })
