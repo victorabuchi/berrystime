@@ -55,7 +55,7 @@ module.exports = async function authRoutes(fastify) {
     }
 
     const result = await db.query(
-      'SELECT * FROM workers WHERE work_number = $1 AND is_active = true',
+      'SELECT * FROM workers WHERE (work_number = $1 OR email = $1) AND is_active = true',
       [work_number]
     )
     if (!result.rows[0]) {
