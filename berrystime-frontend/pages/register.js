@@ -338,7 +338,7 @@ export default function Register() {
 
           <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1a1a18', marginBottom: '16px', textAlign: 'center' }}>Sign up for Rannikon</h2>
 
-          <button className="gh-btn-outline" style={{ marginBottom: '4px' }} onClick={() => {}}>
+          <button className="gh-btn-outline" style={{ marginBottom: '4px' }} onClick={() => window.location.href = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4003') + '/api/auth/google'}>
             <GoogleIcon />
             Continue with Google
           </button>

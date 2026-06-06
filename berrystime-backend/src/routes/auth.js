@@ -89,7 +89,7 @@ module.exports = async function authRoutes(fastify) {
     onRequest: [fastify.authenticate]
   }, async (request, reply) => {
     const result = await db.query(
-      'SELECT id, work_number, full_name, email, created_at FROM workers WHERE id = $1',
+      'SELECT id, work_number, full_name, email, role, created_at FROM workers WHERE id = $1',
       [request.user.id]
     )
     if (!result.rows[0]) {

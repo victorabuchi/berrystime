@@ -133,7 +133,7 @@ export default function Login() {
 
           <div className="gh-divider">or</div>
 
-          <button className="gh-btn-outline" onClick={() => {}}>
+          <button className="gh-btn-outline" onClick={() => window.location.href = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4003') + '/api/auth/google'}>
             <GoogleIcon />
             Continue with Google
           </button>
