@@ -36,54 +36,87 @@ function CheckIcon() {
   )
 }
 
-/* Animated floating cards for the left panel */
-function LeftVisual() {
-  const [tick, setTick] = useState(0)
+/* Paper auto-fill animation — no movement, shows hours being calculated row by row */
+function PaperFillAnimation() {
+  const [filledCount, setFilledCount] = useState(0)
+  const [done, setDone] = useState(false)
+
   useEffect(() => {
-    const t = setInterval(() => setTick(s => (s + 1) % 60), 1000)
-    return () => clearInterval(t)
-  }, [])
+    if (filledCount < 5) {
+      const t = setTimeout(() => setFilledCount(c => c + 1), 700)
+      return () => clearTimeout(t)
+    } else if (!done) {
+      const t = setTimeout(() => setDone(true), 400)
+      return () => clearTimeout(t)
+    } else {
+      // reset loop
+      const t = setTimeout(() => { setFilledCount(0); setDone(false) }, 2800)
+      return () => clearTimeout(t)
+    }
+  }, [filledCount, done])
 
   const rows = [
-    { day: 1,  start: '09:30', finish: '18:00', hrs: '7:30' },
-    { day: 2,  start: '10:00', finish: '19:30', hrs: '7:30' },
-    { day: 3,  start: '09:15', finish: '18:00', hrs: '7:30' },
-    { day: 4,  start: '08:45', finish: '17:15', hrs: '7:30' },
-    { day: 5,  start: '09:00', finish: '18:30', hrs: '7:30' },
+    { day: 1, start: '09:30', finish: '18:00', hrs: '7:30' },
+    { day: 2, start: '10:00', finish: '19:30', hrs: '7:30' },
+    { day: 3, start: '09:15', finish: '18:00', hrs: '7:30' },
+    { day: 4, start: '08:45', finish: '17:15', hrs: '7:30' },
+    { day: 5, start: '09:00', finish: '18:30', hrs: '7:30' },
   ]
 
   return (
-    <div style={{ position: 'relative', width: '100%', maxWidth: '360px', margin: '36px auto 0', height: '280px' }}>
+    <div style={{ marginTop: '32px', maxWidth: '380px' }}>
 
-      {/* Main timesheet card */}
-      <div style={{ position: 'absolute', left: 0, top: 0, width: '240px', animation: 'floatA 5s ease-in-out infinite', background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '14px', padding: '14px 16px' }}>
-        <div style={{ fontSize: '9px', fontWeight: '700', color: '#4ade80', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '10px' }}>White Paper — June</div>
-        {rows.map((r, i) => (
-          <div key={r.day} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: i < rows.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none', opacity: tick % 6 > i ? 1 : 0.25, transition: 'opacity 0.4s' }}>
-            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}>Day {r.day}</span>
-            <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)' }}>{r.start} – {r.finish}</span>
-            <span style={{ fontSize: '11px', fontWeight: '700', color: '#4ade80' }}>{r.hrs}</span>
-          </div>
-        ))}
+      {/* White Paper card */}
+      <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '12px', overflow: 'hidden' }}>
+        {/* Card header */}
+        <div style={{ background: 'rgba(45,106,45,0.3)', padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '11px', fontWeight: '700', color: '#4ade80', textTransform: 'uppercase', letterSpacing: '0.8px' }}>White Paper</span>
+          <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)' }}>June 2026</span>
+        </div>
+
+        {/* Table header */}
+        <div style={{ display: 'grid', gridTemplateColumns: '40px 1fr 1fr 60px', padding: '6px 14px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+          {['Day', 'Start', 'Finish', 'Hours'].map(h => (
+            <span key={h} style={{ fontSize: '10px', color: 'rgba(255,255,255,0.35)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
+          ))}
+        </div>
+
+        {/* Rows */}
+        {rows.map((r, i) => {
+          const rowVisible = i < filledCount
+          const isNew = i === filledCount - 1
+          return (
+            <div key={r.day} style={{
+              display: 'grid', gridTemplateColumns: '40px 1fr 1fr 60px',
+              padding: '7px 14px',
+              borderBottom: i < rows.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+              background: isNew ? 'rgba(74,222,128,0.07)' : 'transparent',
+              transition: 'background 0.6s',
+            }}>
+              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>{r.day}</span>
+              <span style={{ fontSize: '12px', color: rowVisible ? 'rgba(255,255,255,0.75)' : 'transparent', transition: 'color 0.3s' }}>{r.start}</span>
+              <span style={{ fontSize: '12px', color: rowVisible ? 'rgba(255,255,255,0.75)' : 'transparent', transition: 'color 0.3s' }}>{r.finish}</span>
+              <span style={{ fontSize: '12px', fontWeight: '700', color: rowVisible ? '#4ade80' : 'transparent', transition: 'color 0.3s' }}>{r.hrs}</span>
+            </div>
+          )
+        })}
       </div>
 
-      {/* Weekly summary card */}
-      <div style={{ position: 'absolute', right: 0, top: '50px', animation: 'floatB 4s ease-in-out infinite', background: 'rgba(45,106,45,0.35)', border: '1px solid rgba(74,222,128,0.25)', borderRadius: '12px', padding: '12px 14px', width: '140px' }}>
-        <div style={{ fontSize: '9px', fontWeight: '700', color: '#4ade80', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '8px' }}>Week 1</div>
-        {[['White hrs', '37:30'], ['Extra hrs', '5:15'], ['Total', '42:45']].map(([l, v]) => (
-          <div key={l} style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
-            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)' }}>{l}</span>
-            <span style={{ fontSize: '10px', fontWeight: '700', color: '#fff' }}>{v}</span>
-          </div>
-        ))}
+      {/* Completion badge */}
+      <div style={{
+        marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px',
+        justifyContent: 'center', padding: '8px 14px',
+        background: done ? 'rgba(45,106,45,0.3)' : 'rgba(255,255,255,0.04)',
+        border: `1px solid ${done ? 'rgba(74,222,128,0.4)' : 'rgba(255,255,255,0.08)'}`,
+        borderRadius: '8px', transition: 'all 0.5s',
+      }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={done ? '#4ade80' : 'rgba(255,255,255,0.2)'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'stroke 0.5s', flexShrink: 0 }}>
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        <span style={{ fontSize: '12px', fontWeight: '600', color: done ? '#4ade80' : 'rgba(255,255,255,0.25)', transition: 'color 0.5s' }}>
+          All 3 papers auto-filled
+        </span>
       </div>
-
-      {/* Month badge */}
-      <div style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', animation: 'floatC 6s ease-in-out infinite', background: '#2d6a2d', border: '1px solid rgba(74,222,128,0.3)', borderRadius: '20px', padding: '8px 20px', textAlign: 'center', whiteSpace: 'nowrap' }}>
-        <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.65)', marginBottom: '1px' }}>June total</div>
-        <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff', letterSpacing: '-0.5px' }}>156 hrs</div>
-      </div>
-
     </div>
   )
 }
@@ -99,7 +132,8 @@ const FEATURES = [
 const COUNTRIES = [
   'Finland', 'Sweden', 'Norway', 'Denmark', 'Estonia', 'Latvia', 'Lithuania',
   'Poland', 'Germany', 'Romania', 'Bulgaria', 'Hungary', 'Slovakia',
-  'Ukraine', 'Thailand', 'Vietnam', 'Nepal', 'Philippines', 'Other'
+  'Ukraine', 'Nigeria', 'Cameroon', 'Cambodia',
+  'Thailand', 'Vietnam', 'Nepal', 'Philippines', 'Other'
 ]
 
 export default function Register() {
@@ -142,9 +176,6 @@ export default function Register() {
         *{box-sizing:border-box;margin:0;padding:0}
         body{font-family:'DM Sans',sans-serif;background:#0e1a0e;color:#e6edf3;-webkit-font-smoothing:antialiased}
         a{text-decoration:none;color:inherit}
-        @keyframes floatA{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-10px) rotate(1deg)}}
-        @keyframes floatB{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-12px) rotate(-1deg)}}
-        @keyframes floatC{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
         .gh-input{width:100%;padding:5px 12px;font-size:14px;border:1px solid #d0d7de;border-radius:6px;background:#fff;font-family:inherit;color:#1a1a18;height:32px;transition:border-color 0.15s,box-shadow 0.15s}
         .gh-input:focus{outline:none;border-color:#2d6a2d;box-shadow:0 0 0 3px rgba(45,106,45,0.15)}
         .gh-select{width:100%;padding:4px 12px;font-size:14px;border:1px solid #d0d7de;border-radius:6px;background:#fff;font-family:inherit;color:#1a1a18;height:32px;cursor:pointer}
@@ -162,48 +193,43 @@ export default function Register() {
         .error-box{background:#fff0f0;border:1px solid #ffc1c0;color:#cf2030;border-radius:6px;padding:8px 12px;font-size:13px;margin-bottom:12px}
         .feature-item{display:flex;gap:10px;align-items:flex-start;padding:7px 0}
         .feature-item+.feature-item{border-top:1px solid rgba(255,255,255,0.07)}
-        .features-toggle{background:none;border:none;color:rgba(255,255,255,0.75);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0;font-family:inherit;transition:color 0.15s}
+        .features-toggle{background:none;border:none;color:rgba(255,255,255,0.65);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;padding:0;font-family:inherit;transition:color 0.15s}
         .features-toggle:hover{color:#fff}
         .field-label{display:block;font-size:14px;font-weight:600;margin-bottom:4px;color:#1a1a18}
         .field-label span{color:#cf2030;margin-left:1px}
-        .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:#1a2e1a;border-top:1px solid rgba(255,255,255,0.1);padding:12px 20px;font-size:12px;color:rgba(255,255,255,0.7);z-index:1000}
+        .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:#1a2e1a;border-top:1px solid rgba(255,255,255,0.1);padding:12px 20px;font-size:12px;color:rgba(255,255,255,0.65);z-index:1000}
         .cookie-banner a{color:#4ade80}
         .cookie-banner a:hover{text-decoration:underline}
         @media(max-width:900px){
           .reg-layout{flex-direction:column!important}
-          .reg-left{padding:32px 24px 24px!important;min-height:unset!important}
+          .reg-left{padding:40px 24px 24px!important;min-height:unset!important}
           .reg-right{width:100%!important;max-width:100%!important;padding:24px 20px 100px!important}
         }
       `}</style>
 
-      {/* Main layout */}
       <div className="reg-layout" style={{ display: 'flex', minHeight: '100vh' }}>
 
         {/* LEFT PANEL */}
         <div className="reg-left" style={{
-          flex: 1, padding: '60px 56px 60px',
+          flex: 1, padding: '56px 52px 56px',
           background: 'linear-gradient(160deg, #0e1a0e 0%, #1a3a1a 55%, #0e1f0e 100%)',
           display: 'flex', flexDirection: 'column', justifyContent: 'center',
           minHeight: '100vh', position: 'relative', overflow: 'hidden'
         }}>
 
-          {/* Background grid dots */}
-          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(74,222,128,0.06) 1px, transparent 1px)', backgroundSize: '28px 28px', pointerEvents: 'none' }} />
-          {/* Green glow top-right */}
-          <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(45,106,45,0.25) 0%, transparent 65%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(74,222,128,0.05) 1px, transparent 1px)', backgroundSize: '28px 28px', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '260px', height: '260px', background: 'radial-gradient(circle, rgba(45,106,45,0.2) 0%, transparent 65%)', pointerEvents: 'none' }} />
 
-          <div style={{ position: 'relative', maxWidth: '420px' }}>
+          <div style={{ position: 'relative', maxWidth: '400px' }}>
 
-            {/* Logo badge */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.95)', borderRadius: '10px', padding: '6px 12px', marginBottom: '28px' }}>
-              <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '28px', width: 'auto' }} />
-              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '18px', color: '#2d6a2d', lineHeight: 1 }}>Rannikon Puutarha</span>
-            </div>
+            {/* Logo — standalone, big, no box */}
+            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '56px', width: 'auto', marginBottom: '6px', display: 'block' }} />
+            <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '28px', color: '#4ade80', display: 'block', marginBottom: '28px', lineHeight: 1 }}>Rannikon Puutarha</span>
 
-            <h1 style={{ fontSize: 'clamp(26px,4vw,38px)', fontWeight: '700', lineHeight: 1.15, marginBottom: '10px', color: '#fff' }}>
+            <h1 style={{ fontSize: 'clamp(24px,3.5vw,36px)', fontWeight: '700', lineHeight: 1.15, marginBottom: '10px', color: '#fff' }}>
               Create your account
             </h1>
-            <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6', marginBottom: '20px' }}>
+            <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.55)', lineHeight: '1.6', marginBottom: '20px' }}>
               Track your farm work hours accurately.<br />Auto-calculate your paper forms.
             </p>
 
@@ -218,32 +244,30 @@ export default function Register() {
             <div style={{ overflow: 'hidden', maxHeight: showFeatures ? '400px' : '0', transition: 'max-height 0.35s ease', marginTop: showFeatures ? '14px' : '0' }}>
               {FEATURES.map(f => (
                 <div key={f.title} className="feature-item">
-                  <div style={{ flexShrink: 0, marginTop: '2px', width: '18px', height: '18px', background: 'rgba(74,222,128,0.15)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ flexShrink: 0, marginTop: '2px', width: '18px', height: '18px', background: 'rgba(74,222,128,0.12)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <CheckIcon />
                   </div>
                   <div>
                     <div style={{ fontSize: '13px', fontWeight: '600', color: '#e6edf3', marginBottom: '1px' }}>{f.title}</div>
-                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', lineHeight: '1.4' }}>{f.desc}</div>
+                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', lineHeight: '1.4' }}>{f.desc}</div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Animated visual */}
-            <LeftVisual />
+            <PaperFillAnimation />
           </div>
         </div>
 
         {/* RIGHT PANEL */}
         <div className="reg-right" style={{ width: '460px', maxWidth: '460px', background: '#fff', overflowY: 'auto', padding: '40px 36px 80px', display: 'flex', flexDirection: 'column' }}>
 
-          {/* Already have account — inside right panel, top */}
           <p style={{ textAlign: 'right', fontSize: '13px', color: '#666', marginBottom: '20px' }}>
             Already have an account?{' '}
             <a href="/login" style={{ color: '#2d6a2d', fontWeight: '600' }}
               onMouseEnter={e => e.target.style.textDecoration = 'underline'}
               onMouseLeave={e => e.target.style.textDecoration = 'none'}>
-              Sign in →
+              Sign in
             </a>
           </p>
 
@@ -302,7 +326,7 @@ export default function Register() {
             </div>
 
             <button type="submit" className="gh-btn-green" disabled={loading} style={{ marginTop: '4px' }}>
-              {loading ? 'Creating account...' : 'Create account →'}
+              {loading ? 'Creating account...' : 'Create account'}
             </button>
 
           </form>
@@ -317,7 +341,7 @@ export default function Register() {
         </div>
       </div>
 
-      {/* Cookie banner — short version */}
+      {/* Cookie banner */}
       {cookieBanner && (
         <div className="cookie-banner">
           <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', justifyContent: 'space-between' }}>
@@ -329,7 +353,7 @@ export default function Register() {
             </span>
             <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
               <button onClick={() => setCookieBanner(false)} style={{ padding: '4px 14px', background: '#2d6a2d', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Accept</button>
-              <button onClick={() => setCookieBanner(false)} style={{ padding: '4px 14px', background: 'transparent', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Reject</button>
+              <button onClick={() => setCookieBanner(false)} style={{ padding: '4px 14px', background: 'transparent', color: 'rgba(255,255,255,0.65)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Reject</button>
             </div>
           </div>
         </div>
