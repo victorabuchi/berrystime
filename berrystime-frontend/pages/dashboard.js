@@ -86,7 +86,7 @@ export default function Dashboard() {
   }
 
   async function deleteEntry(day) {
-    const dateStr = year + '-' + String(month).padStart(2,'0') + '-' + String(day).padStart(2,'0') + 'T12:00:00.000Z'
+    const dateStr = year + '-' + String(month).padStart(2,'0') + '-' + String(day).padStart(2,'0')
     try {
       await api.delete('/api/timesheet/entry/' + dateStr)
       await loadEntries()
