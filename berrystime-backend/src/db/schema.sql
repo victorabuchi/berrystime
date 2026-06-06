@@ -5,9 +5,13 @@ CREATE TABLE IF NOT EXISTS workers (
   email TEXT UNIQUE NOT NULL,
   password_hash TEXT,
   google_id TEXT,
+  role TEXT DEFAULT 'worker',
   is_active BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- Add role column to existing databases that predate the column
+ALTER TABLE workers ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'worker';
 
 CREATE TABLE IF NOT EXISTS timesheet_entries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

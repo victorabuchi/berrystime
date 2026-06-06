@@ -37,7 +37,21 @@ export default function AdminPanel() {
           .catch(err => { if (err.response?.status === 403) router.push('/dashboard') })
           .finally(() => setLoading(false))
       })
-      .catch(() => router.push('/login'))
+      .catch(err => {
+        if (err.response?.status === 401) { router.push('/login'); return }
+        // API unreachable or server error — fall back to localStorage role check
+        const w = getWorker()
+        if (!w || w.role !== 'admin') { router.push('/dashboard'); return }
+        setWorker(w)
+        setLoading(true)
+        Promise.all([api.get('/api/admin/workers'), api.get('/api/admin/stats')])
+          .then(([workersRes, statsRes]) => {
+            setWorkers(workersRes.data.workers)
+            setStats(statsRes.data)
+          })
+          .catch(e => { if (e.response?.status === 403) router.push('/dashboard') })
+          .finally(() => setLoading(false))
+      })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
