@@ -105,12 +105,19 @@ module.exports = async function timesheetRoutes(fastify) {
   fastify.delete('/api/timesheet/entry/:date', {
     onRequest: [fastify.authenticate]
   }, async (request, reply) => {
-    const dateStr = request.params.date.split('T')[0]
-    await db.query(
-      'DELETE FROM timesheet_entries WHERE worker_id = $1 AND entry_date::date = $2::date',
-      [request.user.id, dateStr]
-    )
-    return reply.send({ success: true })
+    try {
+      const dateStr = request.params.date.split('T')[0]
+      console.log('DELETE entry:', { worker_id: request.user.id, dateStr })
+      const result = await db.query(
+        'DELETE FROM timesheet_entries WHERE worker_id = $1 AND entry_date::date = $2::date',
+        [request.user.id, dateStr]
+      )
+      console.log('DELETE result:', result.rowCount)
+      return reply.send({ success: true })
+    } catch (err) {
+      console.error('DELETE error:', err.message)
+      return reply.status(500).send({ error: err.message })
+    }
   })
 
 }

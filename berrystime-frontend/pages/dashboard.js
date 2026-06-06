@@ -92,7 +92,8 @@ export default function Dashboard() {
       await loadEntries()
       setConfirmDelete(null)
     } catch (err) {
-      alert('Failed to delete entry')
+      const msg = err?.response?.data?.error || err?.response?.status || err?.message || 'unknown'
+      alert('Delete failed: ' + msg)
     }
   }
 
