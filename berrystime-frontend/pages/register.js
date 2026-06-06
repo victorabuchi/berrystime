@@ -287,8 +287,8 @@ export default function Register() {
 
           <div style={{ position: 'relative', maxWidth: '400px' }}>
 
-            {/* Logo — circular crop, no square box */}
-            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '64px', width: '64px', borderRadius: '50%', objectFit: 'cover', marginBottom: '6px', display: 'block' }} />
+            {/* Logo — natural aspect ratio, soft rounded corners */}
+            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '72px', width: 'auto', borderRadius: '12px', display: 'block', marginBottom: '8px' }} />
             <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '28px', color: '#4ade80', display: 'block', marginBottom: '28px', lineHeight: 1 }}>Rannikon Puutarha</span>
 
             <h1 style={{ fontSize: 'clamp(24px,3.5vw,36px)', fontWeight: '700', lineHeight: 1.15, marginBottom: '10px', color: '#fff' }}>
