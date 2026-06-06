@@ -25,6 +25,22 @@ fastify.register(require('@fastify/jwt'), {
   secret: process.env.JWT_SECRET || 'berrystime_dev_secret'
 })
 
+fastify.register(require('@fastify/oauth2'), {
+  name: 'googleOAuth2',
+  scope: ['profile', 'email'],
+  credentials: {
+    client: {
+      id: process.env.GOOGLE_CLIENT_ID,
+      secret: process.env.GOOGLE_CLIENT_SECRET
+    },
+    auth: require('@fastify/oauth2').GOOGLE_CONFIGURATION
+  },
+  startRedirectPath: '/api/auth/google',
+  callbackUri: process.env.NODE_ENV === 'production'
+    ? 'https://berrystime-backend.onrender.com/api/auth/google/callback'
+    : 'http://localhost:4003/api/auth/google/callback'
+})
+
 fastify.decorate('authenticate', async function (request, reply) {
   try {
     await request.jwtVerify()

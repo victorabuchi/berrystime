@@ -161,4 +161,43 @@ module.exports = async function authRoutes(fastify) {
     return reply.send({ message: 'Password reset successfully' })
   })
 
+  fastify.get('/api/auth/google/callback', async (request, reply) => {
+    try {
+      const token = await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request)
+      const res = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: { Authorization: 'Bearer ' + token.token.access_token }
+      })
+      const profile = await res.json()
+
+      let worker = await db.query('SELECT * FROM workers WHERE google_id = $1', [profile.id])
+
+      if (!worker.rows[0]) {
+        worker = await db.query('SELECT * FROM workers WHERE email = $1', [profile.email])
+        if (worker.rows[0]) {
+          await db.query('UPDATE workers SET google_id = $1 WHERE email = $2', [profile.id, profile.email])
+        } else {
+          const result = await db.query(
+            `INSERT INTO workers (work_number, full_name, email, google_id, is_active)
+             VALUES ($1, $2, $3, $4, true) RETURNING *`,
+            ['G-' + profile.id.slice(-6), profile.name, profile.email, profile.id]
+          )
+          worker = result
+        }
+      }
+
+      const w = worker.rows[0]
+      const jwtToken = fastify.jwt.sign(
+        { id: w.id, work_number: w.work_number, full_name: w.full_name },
+        { expiresIn: '30d' }
+      )
+
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:4004'
+      return reply.redirect(`${frontendUrl}/auth/callback?token=${jwtToken}&worker=${encodeURIComponent(JSON.stringify({ id: w.id, work_number: w.work_number, full_name: w.full_name, email: w.email }))}`)
+    } catch (err) {
+      fastify.log.error(err)
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:4004'
+      return reply.redirect(`${frontendUrl}/login?error=google_auth_failed`)
+    }
+  })
+
 }
