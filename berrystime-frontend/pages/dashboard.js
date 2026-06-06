@@ -4,7 +4,7 @@ import Head from 'next/head'
 import api from '../lib/api'
 import { getWorker, isLoggedIn, clearAuth, saveAuth } from '../lib/auth'
 import { jsPDF } from 'jspdf'
-import 'jspdf-autotable'
+import autoTable from 'jspdf-autotable'
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 const VALID = ['09:00','09:15','09:30','09:45']
@@ -560,7 +560,7 @@ export default function Dashboard() {
       doc.text('8 HOURS PER DAY / 40 HOURS PER WEEK', 14, 22)
       doc.text('Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName, 14, 28)
       const rows = Array.from({ length: daysCount }, (_, i) => { const d = i+1; const e = entries[d]; return [d, e ? e.white_start?.slice(0,5) : '', e ? e.white_finish?.slice(0,5) : '', '30 min', '', e ? '7:30' : '', e ? e.what_work : ''] })
-      doc.autoTable({ startY: 32, head: [['Date','Start','Finish','Eating break','Extra breaks','Hours minus breaks','What work']], body: rows, styles: { fontSize: 9 }, headStyles: { fillColor: [220,220,220], textColor: 0 } })
+      autoTable(doc, { startY: 32, head: [['Date','Start','Finish','Eating break','Extra breaks','Hours minus breaks','What work']], body: rows, styles: { fontSize: 9 }, headStyles: { fillColor: [220,220,220], textColor: 0 } })
       doc.save('white-paper-' + monthName + '-' + (worker?.work_number || '') + '.pdf')
     }
     if (tab === 'orange') {
@@ -568,7 +568,7 @@ export default function Dashboard() {
       doc.setFontSize(10); doc.setFont('helvetica', 'normal')
       doc.text('Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName, 14, 22)
       const rows = Array.from({ length: daysCount }, (_, i) => { const d = i+1; const e = entries[d]; return [d, e ? e.orange_start?.slice(0,5) : '', e ? e.orange_finish?.slice(0,5) : '', e ? '0:15' : '', e ? e.orange_hours : '', e ? e.what_work : '', ''] })
-      doc.autoTable({ startY: 26, head: [['Date','Start','Finish','Break','Hours minus breaks','What work','Signature']], body: rows, styles: { fontSize: 9 }, headStyles: { fillColor: [255,224,160], textColor: 0 } })
+      autoTable(doc, { startY: 26, head: [['Date','Start','Finish','Break','Hours minus breaks','What work','Signature']], body: rows, styles: { fontSize: 9 }, headStyles: { fillColor: [255,224,160], textColor: 0 } })
       doc.save('orange-paper-' + monthName + '-' + (worker?.work_number || '') + '.pdf')
     }
     if (tab === 'weekly') {
@@ -580,7 +580,7 @@ export default function Dashboard() {
         const ws = wi*7+1; const wd = Array.from({length:7},(_,i)=>ws+i).filter(d=>d<=daysCount)
         const tw = wd.filter(d=>entries[d]).length*450
         const te = wd.reduce((s,d)=>{ if(!entries[d]?.orange_hours) return s; const p=entries[d].orange_hours.split(':'); return s+parseInt(p[0])*60+parseInt(p[1]) },0)
-        doc.autoTable({ startY: wi===0?26:doc.lastAutoTable.finalY+6, head: [['Type',...wd.map(d=>'Day '+d),...Array(7-wd.length).fill(''),'Total']], body: [['Working hrs',...wd.map(d=>entries[d]?'7:30':''),...Array(7-wd.length).fill(''),toHHMM(tw)],['Extra hrs',...wd.map(d=>entries[d]?entries[d].orange_hours:''),...Array(7-wd.length).fill(''),toHHMM(te)],['Total',...wd.map(d=>entries[d]?entries[d].total_hours:''),...Array(7-wd.length).fill(''),toHHMM(tw+te)]], styles:{fontSize:8}, headStyles:{fillColor:[187,222,251],textColor:0} })
+        autoTable(doc, { startY: wi===0?26:(doc.lastAutoTable?.finalY||26)+6, head: [['Type',...wd.map(d=>'Day '+d),...Array(7-wd.length).fill(''),'Total']], body: [['Working hrs',...wd.map(d=>entries[d]?'7:30':''),...Array(7-wd.length).fill(''),toHHMM(tw)],['Extra hrs',...wd.map(d=>entries[d]?entries[d].orange_hours:''),...Array(7-wd.length).fill(''),toHHMM(te)],['Total',...wd.map(d=>entries[d]?entries[d].total_hours:''),...Array(7-wd.length).fill(''),toHHMM(tw+te)]], styles:{fontSize:8}, headStyles:{fillColor:[187,222,251],textColor:0} })
       })
       doc.save('weekly-summary-' + monthName + '-' + (worker?.work_number || '') + '.pdf')
     }
@@ -589,7 +589,7 @@ export default function Dashboard() {
       doc.setFontSize(10); doc.setFont('helvetica', 'normal')
       doc.text('Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName, 14, 22)
       const rows = Array.from({ length: daysCount }, (_, i) => [i+1, '', '', '1 hour', '', '', ''])
-      doc.autoTable({ startY: 26, head: [['Date','Start','Finish','Eating break','Extra breaks','Hours minus breaks','What was picked up']], body: rows, styles:{fontSize:9}, headStyles:{fillColor:[200,230,201],textColor:0} })
+      autoTable(doc, { startY: 26, head: [['Date','Start','Finish','Eating break','Extra breaks','Hours minus breaks','What was picked up']], body: rows, styles:{fontSize:9}, headStyles:{fillColor:[200,230,201],textColor:0} })
       doc.save('green-paper-' + monthName + '-' + (worker?.work_number || '') + '.pdf')
     }
   }
