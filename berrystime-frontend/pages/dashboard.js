@@ -525,7 +525,7 @@ export default function Dashboard() {
                             </td>
                             {dayInfos.map(({ d, isSun, exists }) => (
                               <td key={d} style={tdW2({ fontWeight: entries[d] ? '700' : '400', background: '#fafafa', color: isSun ? '#bbb' : (entries[d] ? '#1a1a18' : '#ccc') })}>
-                                {isSun ? 'X' : (entries[d] ? '7:30' : '')}
+                                {isSun ? 'X' : (entries[d] ? <EditableCell value={entries[d].white_hours || '7:30'} field="white_hours" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(d).padStart(2,'0')} onSave={saveField} /> : '')}
                               </td>
                             ))}
                             <td style={tdW2({ fontWeight: '700', background: '#fafafa' })}>
@@ -541,7 +541,7 @@ export default function Dashboard() {
                             </td>
                             {dayInfos.map(({ d, isSun, exists, isSat }) => (
                               <td key={d} style={tdO2({ fontWeight: entries[d] ? '700' : '400', background: '#fff3e0', color: isSun ? '#bbb' : (entries[d] ? '#b45309' : '#ccc') })}>
-                                {isSun ? 'X' : (entries[d] ? entries[d].orange_hours : '')}
+                                {isSun ? 'X' : (entries[d] ? <EditableCell value={entries[d].orange_hours} field="orange_hours" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(d).padStart(2,'0')} onSave={saveField} /> : '')}
                               </td>
                             ))}
                             <td style={tdO2({ fontWeight: '700', color: '#b45309', background: '#fff3e0' })}>
