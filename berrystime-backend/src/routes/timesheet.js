@@ -102,6 +102,31 @@ module.exports = async function timesheetRoutes(fastify) {
     return reply.send({ entry: result.rows[0] })
   })
 
+  fastify.patch('/api/timesheet/entry/:date/field', {
+    onRequest: [fastify.authenticate]
+  }, async (request, reply) => {
+    const { field, value } = request.body
+    const dateStr = request.params.date.split('T')[0]
+
+    const allowed = [
+      'white_start', 'white_finish', 'white_hours',
+      'orange_start', 'orange_finish', 'orange_hours',
+      'total_hours', 'what_work', 'actual_start', 'actual_finish'
+    ]
+
+    if (!allowed.includes(field)) {
+      return reply.status(400).send({ error: 'Field not allowed' })
+    }
+
+    await db.query(
+      `UPDATE timesheet_entries SET ${field} = $1, updated_at = now()
+       WHERE worker_id = $2 AND entry_date::date = $3::date`,
+      [value, request.user.id, dateStr]
+    )
+
+    return reply.send({ success: true })
+  })
+
   fastify.delete('/api/timesheet/entry/:date', {
     onRequest: [fastify.authenticate]
   }, async (request, reply) => {
