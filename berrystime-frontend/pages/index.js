@@ -257,11 +257,10 @@ export default function Home() {
       `}</style>
 
       {/* NAV */}
-      <nav style={{ background: 'rgba(250,250,249,0.92)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #e8e8e3', position: 'sticky', top: 0, zIndex: 200, padding: '0 24px' }}>
+      <nav style={{ background: 'rgba(250,250,249,0.96)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #e8e8e3', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200, padding: '0 24px' }}>
         <div style={{ maxWidth: '1080px', margin: '0 auto', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '36px', width: 'auto', flexShrink: 0 }} />
-            <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '26px', color: '#1a1a18', lineHeight: 1 }}>Rannikon Puutarha</span>
+            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '40px', width: 'auto', flexShrink: 0, borderRadius: '6px' }} />
           </div>
           <div className="nav-links" style={{ display: 'flex', gap: '28px', alignItems: 'center' }}>
             {['Features', 'How it works', 'Calculator'].map(l => (
@@ -275,6 +274,9 @@ export default function Home() {
           </div>
         </div>
       </nav>
+
+      {/* spacer for fixed nav */}
+      <div style={{ height: '60px' }} />
 
       {/* HERO */}
       <section style={{ background: 'linear-gradient(160deg,#f2f8f2 0%,#fafaf9 45%,#f8f4ee 100%)', padding: '72px 24px 60px', overflow: 'hidden', position: 'relative' }}>
