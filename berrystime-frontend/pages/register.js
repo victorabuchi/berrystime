@@ -36,85 +36,150 @@ function CheckIcon() {
   )
 }
 
-/* Paper auto-fill animation — no movement, shows hours being calculated row by row */
+const PAPERS = [
+  {
+    name: 'White Paper',
+    accent: '#4ade80',
+    headerBg: 'rgba(45,106,45,0.35)',
+    cols: ['Day', 'Start', 'Finish', 'Hours'],
+    rows: [
+      ['1', '09:30', '18:00', '7:30'],
+      ['2', '10:00', '19:30', '7:30'],
+      ['3', '09:15', '18:00', '7:30'],
+    ],
+  },
+  {
+    name: 'Orange Paper',
+    accent: '#fb923c',
+    headerBg: 'rgba(180,83,9,0.35)',
+    cols: ['Day', 'Start', 'Finish', 'Extra hrs'],
+    rows: [
+      ['1', '18:00', '21:30', '3:15'],
+      ['2', '19:30', '22:00', '2:15'],
+      ['3', '18:30', '21:15', '2:30'],
+    ],
+  },
+  {
+    name: 'Weekly Summary',
+    accent: '#60a5fa',
+    headerBg: 'rgba(21,101,192,0.35)',
+    cols: ['Week', 'Reg hrs', 'Extra hrs', 'Total'],
+    rows: [
+      ['1', '37:30', '12:15', '49:45'],
+      ['2', '37:30', '9:00',  '46:30'],
+      ['3', '30:00', '7:45',  '37:45'],
+    ],
+  },
+  {
+    name: 'Green Paper',
+    accent: '#34d399',
+    headerBg: 'rgba(5,150,105,0.35)',
+    cols: ['Day', 'Start', 'Finish', 'Kg picked'],
+    rows: [
+      ['1', '09:00', '16:30', '240 kg'],
+      ['2', '09:30', '17:00', '195 kg'],
+      ['3', '08:45', '16:15', '280 kg'],
+    ],
+  },
+]
+
+/* Cycles through all 4 papers, filling rows one by one — no movement */
 function PaperFillAnimation() {
+  const [paperIdx, setPaperIdx] = useState(0)
   const [filledCount, setFilledCount] = useState(0)
-  const [done, setDone] = useState(false)
+  const [paperDone, setPaperDone] = useState(false)
+  const [allDone, setAllDone] = useState(false)
 
   useEffect(() => {
-    if (filledCount < 5) {
-      const t = setTimeout(() => setFilledCount(c => c + 1), 700)
-      return () => clearTimeout(t)
-    } else if (!done) {
-      const t = setTimeout(() => setDone(true), 400)
-      return () => clearTimeout(t)
-    } else {
-      // reset loop
-      const t = setTimeout(() => { setFilledCount(0); setDone(false) }, 2800)
+    if (allDone) {
+      const t = setTimeout(() => { setPaperIdx(0); setFilledCount(0); setPaperDone(false); setAllDone(false) }, 2600)
       return () => clearTimeout(t)
     }
-  }, [filledCount, done])
+    if (paperDone) {
+      if (paperIdx < 3) {
+        const t = setTimeout(() => { setPaperIdx(p => p + 1); setFilledCount(0); setPaperDone(false) }, 700)
+        return () => clearTimeout(t)
+      } else {
+        const t = setTimeout(() => setAllDone(true), 500)
+        return () => clearTimeout(t)
+      }
+    }
+    if (filledCount < 3) {
+      const t = setTimeout(() => setFilledCount(c => c + 1), 550)
+      return () => clearTimeout(t)
+    } else {
+      const t = setTimeout(() => setPaperDone(true), 400)
+      return () => clearTimeout(t)
+    }
+  }, [paperIdx, filledCount, paperDone, allDone])
 
-  const rows = [
-    { day: 1, start: '09:30', finish: '18:00', hrs: '7:30' },
-    { day: 2, start: '10:00', finish: '19:30', hrs: '7:30' },
-    { day: 3, start: '09:15', finish: '18:00', hrs: '7:30' },
-    { day: 4, start: '08:45', finish: '17:15', hrs: '7:30' },
-    { day: 5, start: '09:00', finish: '18:30', hrs: '7:30' },
-  ]
+  const paper = PAPERS[paperIdx]
 
   return (
     <div style={{ marginTop: '32px', maxWidth: '380px' }}>
 
-      {/* White Paper card */}
-      <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '12px', overflow: 'hidden' }}>
-        {/* Card header */}
-        <div style={{ background: 'rgba(45,106,45,0.3)', padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '11px', fontWeight: '700', color: '#4ade80', textTransform: 'uppercase', letterSpacing: '0.8px' }}>White Paper</span>
+      {/* Paper tab indicators */}
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '8px' }}>
+        {PAPERS.map((p, i) => (
+          <div key={p.name} style={{
+            flex: 1, height: '3px', borderRadius: '2px',
+            background: i < paperIdx || allDone ? p.accent : i === paperIdx ? p.accent : 'rgba(255,255,255,0.12)',
+            opacity: i < paperIdx || allDone ? 0.5 : 1,
+            transition: 'background 0.4s',
+          }} />
+        ))}
+      </div>
+
+      {/* Current paper card */}
+      <div style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${paper.accent}30`, borderRadius: '12px', overflow: 'hidden', transition: 'border-color 0.4s' }}>
+
+        <div style={{ background: paper.headerBg, padding: '9px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'background 0.4s' }}>
+          <span style={{ fontSize: '11px', fontWeight: '700', color: paper.accent, textTransform: 'uppercase', letterSpacing: '0.8px', transition: 'color 0.4s' }}>{paper.name}</span>
           <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)' }}>June 2026</span>
         </div>
 
-        {/* Table header */}
-        <div style={{ display: 'grid', gridTemplateColumns: '40px 1fr 1fr 60px', padding: '6px 14px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-          {['Day', 'Start', 'Finish', 'Hours'].map(h => (
-            <span key={h} style={{ fontSize: '10px', color: 'rgba(255,255,255,0.35)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
+        <div style={{ display: 'grid', gridTemplateColumns: '36px 1fr 1fr 72px', padding: '5px 14px', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+          {paper.cols.map(h => (
+            <span key={h} style={{ fontSize: '10px', color: 'rgba(255,255,255,0.3)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.4px' }}>{h}</span>
           ))}
         </div>
 
-        {/* Rows */}
-        {rows.map((r, i) => {
-          const rowVisible = i < filledCount
+        {paper.rows.map((row, i) => {
+          const visible = i < filledCount
           const isNew = i === filledCount - 1
           return (
-            <div key={r.day} style={{
-              display: 'grid', gridTemplateColumns: '40px 1fr 1fr 60px',
-              padding: '7px 14px',
-              borderBottom: i < rows.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-              background: isNew ? 'rgba(74,222,128,0.07)' : 'transparent',
-              transition: 'background 0.6s',
+            <div key={i} style={{
+              display: 'grid', gridTemplateColumns: '36px 1fr 1fr 72px',
+              padding: '6px 14px',
+              borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+              background: isNew ? `${paper.accent}10` : 'transparent',
+              transition: 'background 0.5s',
             }}>
-              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>{r.day}</span>
-              <span style={{ fontSize: '12px', color: rowVisible ? 'rgba(255,255,255,0.75)' : 'transparent', transition: 'color 0.3s' }}>{r.start}</span>
-              <span style={{ fontSize: '12px', color: rowVisible ? 'rgba(255,255,255,0.75)' : 'transparent', transition: 'color 0.3s' }}>{r.finish}</span>
-              <span style={{ fontSize: '12px', fontWeight: '700', color: rowVisible ? '#4ade80' : 'transparent', transition: 'color 0.3s' }}>{r.hrs}</span>
+              <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)' }}>{row[0]}</span>
+              <span style={{ fontSize: '12px', color: visible ? 'rgba(255,255,255,0.7)' : 'transparent', transition: 'color 0.3s' }}>{row[1]}</span>
+              <span style={{ fontSize: '12px', color: visible ? 'rgba(255,255,255,0.7)' : 'transparent', transition: 'color 0.3s' }}>{row[2]}</span>
+              <span style={{ fontSize: '12px', fontWeight: '700', color: visible ? paper.accent : 'transparent', transition: 'color 0.3s' }}>{row[3]}</span>
             </div>
           )
         })}
       </div>
 
-      {/* Completion badge */}
+      {/* Status badge */}
       <div style={{
-        marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px',
-        justifyContent: 'center', padding: '8px 14px',
-        background: done ? 'rgba(45,106,45,0.3)' : 'rgba(255,255,255,0.04)',
-        border: `1px solid ${done ? 'rgba(74,222,128,0.4)' : 'rgba(255,255,255,0.08)'}`,
-        borderRadius: '8px', transition: 'all 0.5s',
+        marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px',
+        justifyContent: 'center', padding: '7px 14px',
+        background: allDone ? 'rgba(45,106,45,0.3)' : paperDone ? `${paper.accent}18` : 'rgba(255,255,255,0.04)',
+        border: `1px solid ${allDone ? 'rgba(74,222,128,0.45)' : paperDone ? `${paper.accent}40` : 'rgba(255,255,255,0.07)'}`,
+        borderRadius: '8px', transition: 'all 0.45s',
       }}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={done ? '#4ade80' : 'rgba(255,255,255,0.2)'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'stroke 0.5s', flexShrink: 0 }}>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+          stroke={allDone ? '#4ade80' : paperDone ? paper.accent : 'rgba(255,255,255,0.18)'}
+          strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: 'stroke 0.4s', flexShrink: 0 }}>
           <polyline points="20 6 9 17 4 12"/>
         </svg>
-        <span style={{ fontSize: '12px', fontWeight: '600', color: done ? '#4ade80' : 'rgba(255,255,255,0.25)', transition: 'color 0.5s' }}>
-          All 3 papers auto-filled
+        <span style={{ fontSize: '12px', fontWeight: '600', transition: 'color 0.4s',
+          color: allDone ? '#4ade80' : paperDone ? paper.accent : 'rgba(255,255,255,0.22)' }}>
+          {allDone ? 'All 4 papers auto-filled' : paperDone ? `${paper.name} complete` : `Filling ${paper.name}...`}
         </span>
       </div>
     </div>
@@ -222,8 +287,8 @@ export default function Register() {
 
           <div style={{ position: 'relative', maxWidth: '400px' }}>
 
-            {/* Logo — standalone, big, no box */}
-            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '56px', width: 'auto', marginBottom: '6px', display: 'block' }} />
+            {/* Logo — circular crop, no square box */}
+            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '64px', width: '64px', borderRadius: '50%', objectFit: 'cover', marginBottom: '6px', display: 'block' }} />
             <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '28px', color: '#4ade80', display: 'block', marginBottom: '28px', lineHeight: 1 }}>Rannikon Puutarha</span>
 
             <h1 style={{ fontSize: 'clamp(24px,3.5vw,36px)', fontWeight: '700', lineHeight: 1.15, marginBottom: '10px', color: '#fff' }}>
