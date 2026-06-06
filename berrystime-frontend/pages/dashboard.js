@@ -495,7 +495,7 @@ export default function Dashboard() {
                         {hasEntry ? (
                           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center', marginTop: '4px' }}>
                             <span style={{ fontSize: '12px', color: '#555' }}>{entry.actual_start?.slice(0,5)} — {entry.actual_finish?.slice(0,5)}</span>
-                            <span style={{ fontSize: '11px', fontWeight: '700', background: '#e8f5e9', color: '#2d6a2d', padding: '2px 8px', borderRadius: '4px' }}>W: 7:30</span>
+                            <span style={{ fontSize: '11px', fontWeight: '700', background: '#f0f0f0', color: '#555', padding: '2px 8px', borderRadius: '4px' }}>W: 7:30</span>
                             <span style={{ fontSize: '11px', fontWeight: '700', background: '#fff3e0', color: '#b45309', padding: '2px 8px', borderRadius: '4px' }}>O: {entry.orange_hours}</span>
                             <span style={{ fontSize: '11px', fontWeight: '700', background: '#e3f2fd', color: '#1565c0', padding: '2px 8px', borderRadius: '4px' }}>Total: {entry.total_hours}</span>
                             {entry.what_work && <span style={{ fontSize: '11px', color: '#888' }}>{entry.what_work}</span>}
