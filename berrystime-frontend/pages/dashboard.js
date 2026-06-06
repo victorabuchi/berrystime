@@ -120,7 +120,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              <tr style={{ background: '#f0fff0' }}>
+              <tr style={{ background: '#fafafa' }}>
                 <td style={tdW()}><b>{day}</b></td>
                 <td style={tdW()}>{entry.white_start?.slice(0,5)}</td>
                 <td style={tdW()}>{entry.white_finish?.slice(0,5)}</td>
@@ -290,7 +290,7 @@ export default function Dashboard() {
                     {Array.from({ length: days }, (_, i) => i + 1).map(day => {
                       const entry = entries[day]
                       return (
-                        <tr key={day} style={{ background: entry ? '#f0fff0' : '#fff' }}>
+                        <tr key={day} style={{ background: entry ? '#fafafa' : '#fff' }}>
                           <td style={tdW()}><b>{day}</b></td>
                           <td style={tdW()}>{entry ? entry.white_start?.slice(0,5) : ''}</td>
                           <td style={tdW()}>{entry ? entry.white_finish?.slice(0,5) : ''}</td>
