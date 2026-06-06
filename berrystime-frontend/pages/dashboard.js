@@ -347,11 +347,11 @@ export default function Dashboard() {
               <p style={{ fontSize: '11px', color: '#555', fontStyle: 'italic' }}>START WORK 9:00, 9:15, 9:30 or 9:45. WORK DOES NOT START 9:05, 9:10, 9:20, 9:25 etc.</p>
               <div style={{ marginTop: '16px', borderTop: '1px solid #eee', paddingTop: '12px', display: 'flex', gap: '8px' }}>
                 <button onClick={() => downloadPDF('white')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
-                  <img src="/adobepdf.svg" alt="PDF" style={{ width: '14px', height: '14px' }} />
+                  <img src="/pdf-logo.png" alt="PDF" style={{ width: '14px', height: '14px' }} />
                   Download PDF
                 </button>
                 <button onClick={() => downloadExcel('white')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
-                  <img src="/excel.svg" alt="Excel" style={{ width: '14px', height: '14px' }} />
+                  <img src="/excel-logo.png" alt="Excel" style={{ width: '14px', height: '14px' }} />
                   Download Excel
                 </button>
               </div>
@@ -398,11 +398,11 @@ export default function Dashboard() {
               <p style={{ fontSize: '11px', color: '#555', marginTop: '8px', fontStyle: 'italic' }}>Start work 9:00, 9:15, 9:30 or 9:45. Work does not start 9:05, 9:10, 9:20, 9:25 etc.</p>
               <div style={{ marginTop: '16px', borderTop: '1px solid #eee', paddingTop: '12px', display: 'flex', gap: '8px' }}>
                 <button onClick={() => downloadPDF('orange')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
-                  <img src="/adobepdf.svg" alt="PDF" style={{ width: '14px', height: '14px' }} />
+                  <img src="/pdf-logo.png" alt="PDF" style={{ width: '14px', height: '14px' }} />
                   Download PDF
                 </button>
                 <button onClick={() => downloadExcel('orange')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
-                  <img src="/excel.svg" alt="Excel" style={{ width: '14px', height: '14px' }} />
+                  <img src="/excel-logo.png" alt="Excel" style={{ width: '14px', height: '14px' }} />
                   Download Excel
                 </button>
               </div>
@@ -515,11 +515,11 @@ export default function Dashboard() {
               })}
               <div style={{ marginTop: '16px', borderTop: '1px solid #eee', paddingTop: '12px', display: 'flex', gap: '8px' }}>
                 <button onClick={() => downloadPDF('weekly')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
-                  <img src="/adobepdf.svg" alt="PDF" style={{ width: '14px', height: '14px' }} />
+                  <img src="/pdf-logo.png" alt="PDF" style={{ width: '14px', height: '14px' }} />
                   Download PDF
                 </button>
                 <button onClick={() => downloadExcel('weekly')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
-                  <img src="/excel.svg" alt="Excel" style={{ width: '14px', height: '14px' }} />
+                  <img src="/excel-logo.png" alt="Excel" style={{ width: '14px', height: '14px' }} />
                   Download Excel
                 </button>
               </div>
@@ -567,11 +567,11 @@ export default function Dashboard() {
               <p style={{ fontSize: '11px', color: '#555', fontStyle: 'italic' }}>START WORK 9:00, 9:15, 9:30 or 9:45. WORK DOES NOT START 9:05, 9:10, 9:20, 9:25 etc.</p>
               <div style={{ marginTop: '16px', borderTop: '1px solid #eee', paddingTop: '12px', display: 'flex', gap: '8px' }}>
                 <button onClick={() => downloadPDF('green')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
-                  <img src="/adobepdf.svg" alt="PDF" style={{ width: '14px', height: '14px' }} />
+                  <img src="/pdf-logo.png" alt="PDF" style={{ width: '14px', height: '14px' }} />
                   Download PDF
                 </button>
                 <button onClick={() => downloadExcel('green')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
-                  <img src="/excel.svg" alt="Excel" style={{ width: '14px', height: '14px' }} />
+                  <img src="/excel-logo.png" alt="Excel" style={{ width: '14px', height: '14px' }} />
                   Download Excel
                 </button>
               </div>
