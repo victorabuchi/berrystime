@@ -260,11 +260,7 @@ export default function Home() {
       <nav style={{ background: 'rgba(250,250,249,0.92)', backdropFilter: 'blur(12px)', borderBottom: '1px solid #e8e8e3', position: 'sticky', top: 0, zIndex: 200, padding: '0 24px' }}>
         <div style={{ maxWidth: '1080px', margin: '0 auto', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '34px', height: '34px', background: '#2d6a2d', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
-            </div>
+            <img src="/rannikkopuutarhalogo.svg" alt="Rannikon Puutarha" style={{ height: '36px', width: 'auto', flexShrink: 0 }} />
             <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '26px', color: '#1a1a18', lineHeight: 1 }}>Rannikon Puutarha</span>
           </div>
           <div className="nav-links" style={{ display: 'flex', gap: '28px', alignItems: 'center' }}>
