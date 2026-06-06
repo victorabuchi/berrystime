@@ -17,3 +17,5 @@ npm-debug.log*
 
 # OS
 .DS_Store
+berrystime-backend/.env
+berrystime-frontend/.env.local
