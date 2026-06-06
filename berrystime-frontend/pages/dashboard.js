@@ -298,14 +298,10 @@ export default function Dashboard() {
 
         <div style={{ background: '#f5f5f5', borderBottom: '1px solid #ccc', padding: '8px', display: 'flex', flexDirection: 'row', gap: '6px', flexWrap: 'wrap' }}>
           <p style={{ fontSize: '11px', fontWeight: '700', color: '#555', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Papers</p>
-          <div style={{display:'flex',flexDirection:'row',gap:'6px',flexWrap:'wrap',alignItems:'center'}}>
-            {[['white','White Paper','Work paid by hour'],['orange','Orange Paper','Extrawork'],['weekly','Weekly Summary','Mon to Sun totals'],['green','Green Paper','Berry picking']].map(([tab,label,sub])=>(
-              <div key={tab} style={{display:'flex',flexDirection:'column',gap:'2px'}}>
-                {navBtn(tab,label,sub)}
-                <button onClick={()=>downloadPDF(tab)} style={{padding:'3px 8px',fontSize:'10px',fontWeight:'600',background:'#f5f5f0',border:'1px solid #ddd',borderRadius:'4px',cursor:'pointer',color:'#555',whiteSpace:'nowrap'}}>Download PDF</button>
-              </div>
-            ))}
-          </div>
+          {navBtn('white', 'White Paper', 'Work paid by hour')}
+          {navBtn('orange', 'Orange Paper', 'Extrawork')}
+          {navBtn('weekly', 'Weekly Summary', 'Mon to Sun totals')}
+          {navBtn('green', 'Green Paper', 'Berry picking')}
         </div>
 
         <div style={{ flex: 1, padding: '16px', overflowX: 'auto' }}>
@@ -348,6 +344,12 @@ export default function Dashboard() {
               </div>
               <p style={{ fontSize: '11px', color: '#555', marginTop: '8px', fontStyle: 'italic' }}>When you have worked 4 hours, You need to have an eating break, minimum of 30 mins.</p>
               <p style={{ fontSize: '11px', color: '#555', fontStyle: 'italic' }}>START WORK 9:00, 9:15, 9:30 or 9:45. WORK DOES NOT START 9:05, 9:10, 9:20, 9:25 etc.</p>
+              <div style={{ marginTop: '16px', borderTop: '1px solid #eee', paddingTop: '12px' }}>
+                <button onClick={() => downloadPDF('white')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
+                  <img src="/adobepdf.svg" alt="PDF" style={{ width: '14px', height: '14px' }} />
+                  Download PDF
+                </button>
+              </div>
             </div>
           )}
 
@@ -389,6 +391,12 @@ export default function Dashboard() {
                 </table>
               </div>
               <p style={{ fontSize: '11px', color: '#555', marginTop: '8px', fontStyle: 'italic' }}>Start work 9:00, 9:15, 9:30 or 9:45. Work does not start 9:05, 9:10, 9:20, 9:25 etc.</p>
+              <div style={{ marginTop: '16px', borderTop: '1px solid #eee', paddingTop: '12px' }}>
+                <button onClick={() => downloadPDF('orange')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
+                  <img src="/adobepdf.svg" alt="PDF" style={{ width: '14px', height: '14px' }} />
+                  Download PDF
+                </button>
+              </div>
             </div>
           )}
 
@@ -496,6 +504,12 @@ export default function Dashboard() {
                   </div>
                 )
               })}
+              <div style={{ marginTop: '16px', borderTop: '1px solid #eee', paddingTop: '12px' }}>
+                <button onClick={() => downloadPDF('weekly')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
+                  <img src="/adobepdf.svg" alt="PDF" style={{ width: '14px', height: '14px' }} />
+                  Download PDF
+                </button>
+              </div>
             </div>
           )}
 
@@ -538,6 +552,12 @@ export default function Dashboard() {
               </div>
               <p style={{ fontSize: '11px', color: '#555', marginTop: '8px', fontStyle: 'italic' }}>When you have worked 4 hours, You need to have an eating break, minimum of 30 mins.</p>
               <p style={{ fontSize: '11px', color: '#555', fontStyle: 'italic' }}>START WORK 9:00, 9:15, 9:30 or 9:45. WORK DOES NOT START 9:05, 9:10, 9:20, 9:25 etc.</p>
+              <div style={{ marginTop: '16px', borderTop: '1px solid #eee', paddingTop: '12px' }}>
+                <button onClick={() => downloadPDF('green')} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', fontSize: '11px', fontWeight: '600', background: '#fff', border: '1px solid #ccc', borderRadius: '5px', cursor: 'pointer', color: '#333' }}>
+                  <img src="/adobepdf.svg" alt="PDF" style={{ width: '14px', height: '14px' }} />
+                  Download PDF
+                </button>
+              </div>
             </div>
           )}
 
