@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import api from '../lib/api'
@@ -17,6 +17,45 @@ function getDaysInMonth(m, y) {
 function minsToHHMM(m) {
   if (m <= 0) return ''
   return Math.floor(m/60) + ':' + String(m%60).padStart(2,'0')
+}
+
+function EditableCell({ value, field, entryDate, onSave, style }) {
+  const [editing, setEditing] = React.useState(false)
+  const [val, setVal] = React.useState(value || '')
+
+  React.useEffect(() => { setVal(value || '') }, [value])
+
+  function handleBlur() {
+    setEditing(false)
+    if (val !== (value || '')) {
+      onSave(field, val, entryDate)
+    }
+  }
+
+  if (editing) {
+    return (
+      <input
+        autoFocus
+        value={val}
+        onChange={e => setVal(e.target.value)}
+        onBlur={handleBlur}
+        onKeyDown={e => { if (e.key === 'Enter') e.target.blur() }}
+        style={{ width: '100%', minWidth: '60px', padding: '2px 4px', fontSize: '12px', border: '1px solid #2d6a2d', borderRadius: '3px', fontFamily: 'inherit', background: '#f0fff0', ...style }}
+      />
+    )
+  }
+
+  return (
+    <span
+      onClick={() => setEditing(true)}
+      title="Click to edit"
+      style={{ cursor: 'pointer', display: 'block', minWidth: '40px', minHeight: '18px', padding: '1px 2px', borderRadius: '3px', transition: 'background 0.15s', ...style }}
+      onMouseEnter={e => e.currentTarget.style.background = '#f0f7f0'}
+      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+    >
+      {val || <span style={{ color: '#ccc', fontSize: '11px' }}>—</span>}
+    </span>
+  )
 }
 
 export default function Dashboard() {
@@ -57,6 +96,15 @@ export default function Dashboard() {
       setEntries(map)
     } catch (err) {
       console.error('Failed to load entries')
+    }
+  }
+
+  async function saveField(field, value, entryDate) {
+    try {
+      await api.patch('/api/timesheet/entry/' + entryDate + '/field', { field, value })
+      await loadEntries()
+    } catch (err) {
+      console.error('Failed to save field', err)
     }
   }
 
@@ -331,12 +379,12 @@ export default function Dashboard() {
                       return (
                         <tr key={day} style={{ background: entry ? '#fafafa' : '#fff' }}>
                           <td style={tdW()}><b>{day}</b></td>
-                          <td style={tdW()}>{entry ? entry.white_start?.slice(0,5) : ''}</td>
-                          <td style={tdW()}>{entry ? entry.white_finish?.slice(0,5) : ''}</td>
+                          <td style={tdW()}>{entry ? <EditableCell value={entry.white_start?.slice(0,5)} field="white_start" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
+                          <td style={tdW()}>{entry ? <EditableCell value={entry.white_finish?.slice(0,5)} field="white_finish" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                           <td style={tdW({ textAlign: 'center' })}>30 min</td>
                           <td style={tdW()}></td>
-                          <td style={tdW({ fontWeight: '700', color: entry ? '#2d6a2d' : '' })}>{entry ? '7:30' : ''}</td>
-                          <td style={tdW()}>{entry ? entry.what_work : ''}</td>
+                          <td style={tdW({ fontWeight: '700', color: entry ? '#2d6a2d' : '' })}>{entry ? <EditableCell value={entry.white_hours || '7:30'} field="white_hours" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
+                          <td style={tdW()}>{entry ? <EditableCell value={entry.what_work} field="what_work" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                         </tr>
                       )
                     })}
@@ -383,11 +431,11 @@ export default function Dashboard() {
                       return (
                         <tr key={day} style={{ background: entry ? '#fff8e1' : '#fffbf0' }}>
                           <td style={tdO()}><b>{day}</b></td>
-                          <td style={tdO()}>{entry ? entry.orange_start?.slice(0,5) : ''}</td>
-                          <td style={tdO()}>{entry ? entry.orange_finish?.slice(0,5) : ''}</td>
+                          <td style={tdO()}>{entry ? <EditableCell value={entry.orange_start?.slice(0,5)} field="orange_start" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
+                          <td style={tdO()}>{entry ? <EditableCell value={entry.orange_finish?.slice(0,5)} field="orange_finish" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                           <td style={tdO({ textAlign: 'center' })}>{entry ? '0:15' : ''}</td>
-                          <td style={tdO({ fontWeight: '700', color: entry ? '#b45309' : '' })}>{entry ? entry.orange_hours : ''}</td>
-                          <td style={tdO()}>{entry ? entry.what_work : ''}</td>
+                          <td style={tdO({ fontWeight: '700', color: entry ? '#b45309' : '' })}>{entry ? <EditableCell value={entry.orange_hours} field="orange_hours" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
+                          <td style={tdO()}>{entry ? <EditableCell value={entry.what_work} field="what_work" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                           <td style={tdO()}></td>
                         </tr>
                       )
