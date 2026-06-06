@@ -762,25 +762,25 @@ export default function Dashboard() {
       <Head><title>Rannikon</title><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
       <div style={{ background: '#f5f5f5', minHeight: '100vh' }}>
 
-        <div style={{ background: '#2d6a2d', padding: '8px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '44px', width: 'auto', borderRadius: '8px', display: 'block' }} />
-            <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '22px', color: '#fff', lineHeight: 1 }}>Rannikon Puutarha</span>
+        <div style={{ background: '#fff', borderBottom: '1px solid #ddd', padding: '6px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '46px', width: 'auto', display: 'block' }} />
+            <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '22px', color: '#2d6a2d', lineHeight: 1 }}>Rannikon Puutarha</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {worker && (
               <button onClick={() => { setWorkNumInput(worker.work_number || ''); setWorkNumError(''); setWorkNumModal(true) }}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ fontSize: '13px', color: '#cfffcf' }}>#{worker.work_number} {worker.full_name}</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <span style={{ fontSize: '13px', color: '#444', fontWeight: '500' }}>#{worker.work_number} {worker.full_name}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
                 </svg>
               </button>
             )}
             {worker?.role === 'admin' && (
-              <button onClick={() => router.push('/admin')} style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#fff' }}>Admin</button>
+              <button onClick={() => router.push('/admin')} style={{ padding: '6px 14px', background: '#2d6a2d', border: 'none', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#fff', fontWeight: '600' }}>Admin</button>
             )}
-            <button onClick={logout} style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#fff' }}>Sign out</button>
+            <button onClick={logout} style={{ padding: '6px 14px', background: '#2d6a2d', border: 'none', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#fff', fontWeight: '600' }}>Sign out</button>
           </div>
         </div>
 
