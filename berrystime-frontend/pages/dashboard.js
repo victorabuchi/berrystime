@@ -18,7 +18,7 @@ function minsToHHMM(m) {
 
 export default function Dashboard() {
   const router = useRouter()
-  const [worker, setWorker] = useState(null)
+  const [worker, setWorker] = useState(getWorker)
   const [entries, setEntries] = useState({})
   const [month, setMonth] = useState(new Date().getMonth() + 1)
   const [year, setYear] = useState(new Date().getFullYear())
@@ -32,8 +32,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!isLoggedIn()) { router.push('/login'); return }
-    setWorker(getWorker())
     loadEntries()
+    api.get('/api/auth/me').then(res => setWorker(res.data.worker)).catch(() => {})
   }, [month, year])
 
   async function loadEntries() {
@@ -516,6 +516,9 @@ export default function Dashboard() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {worker && <span style={{ fontSize: '13px', color: '#cfffcf' }}>#{worker.work_number} {worker.full_name}</span>}
+            {worker?.role === 'admin' && (
+              <button onClick={() => router.push('/admin')} style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#fff' }}>Admin</button>
+            )}
             <button onClick={logout} style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#fff' }}>Sign out</button>
           </div>
         </div>
@@ -597,16 +600,14 @@ export default function Dashboard() {
                       </div>
                     )}
 
-                    {viewDay === day && hasEntry && (
-                      <InlineDayView day={day} entry={entry} />
-                    )}
+                    {viewDay === day && hasEntry && InlineDayView({ day, entry })}
                   </div>
                 )
               })}
             </div>
           )}
 
-          {view === 'papers' && <PapersFullView />}
+          {view === 'papers' && PapersFullView()}
 
         </div>
       </div>
