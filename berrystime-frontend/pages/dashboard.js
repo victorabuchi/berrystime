@@ -458,14 +458,16 @@ export default function Dashboard() {
       <div style={{ background: '#f5f5f5', minHeight: '100vh' }}>
 
         <div style={{ background: '#2d6a2d', padding: '10px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '30px', width: 'auto', filter: 'brightness(0) invert(1)' }} />
-            <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '22px', color: '#fff', lineHeight: 1 }}>Rannikon Puutarha</span>
-          </div>
+          <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '22px', color: '#fff', lineHeight: 1 }}>Rannikon Puutarha</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {worker && <span style={{ fontSize: '13px', color: '#cfffcf' }}>#{worker.work_number} {worker.full_name}</span>}
             <button onClick={logout} style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#fff' }}>Sign out</button>
           </div>
+        </div>
+
+        {/* Logo on white strip below nav */}
+        <div style={{ background: '#fff', borderBottom: '1px solid #e8e8e3', padding: '14px 24px' }}>
+          <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '90px', width: 'auto', display: 'block' }} />
         </div>
 
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '16px' }}>
