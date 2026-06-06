@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+berrystime-backend/node_modules/
+berrystime-frontend/node_modules/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Next.js
+berrystime-frontend/.next/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
