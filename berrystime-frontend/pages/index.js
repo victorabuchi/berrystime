@@ -25,7 +25,7 @@ function AnimatedDemo() {
   }, [step])
 
   const startVal = step >= 2 ? '10:30' : ''
-  const finishVal = step >= 4 ? '18:30' : ''
+  const finishVal = step >= 4 ? '21:15' : ''
   const btnClick = step === 6
   const showResults = step === 7
 
@@ -108,18 +108,47 @@ function AnimatedDemo() {
             Calculate hours
           </div>
 
-          <div style={{ overflow: 'hidden', maxHeight: showResults ? '120px' : '0', transition: 'max-height 0.45s ease', marginTop: showResults ? '10px' : '0' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '5px' }}>
-              {[['White', '7:30', '#e8f5e9', '#2d6a2d'], ['Orange', '1:00', '#fff3e0', '#b45309'], ['Total', '8:30', '#e3f2fd', '#1565c0']].map(([l, v, bg, c]) => (
-                <div key={l} style={{ background: bg, borderRadius: '7px', padding: '7px 4px', textAlign: 'center' }}>
-                  <div style={{ fontSize: '9px', color: c, fontWeight: '700', marginBottom: '2px', textTransform: 'uppercase' }}>{l}</div>
-                  <div style={{ fontSize: '14px', fontWeight: '800', color: c }}>{v}</div>
-                </div>
-              ))}
+          <div style={{ overflow: 'hidden', maxHeight: showResults ? '240px' : '0', transition: 'max-height 0.5s ease', marginTop: showResults ? '10px' : '0' }}>
+
+            {/* White Paper */}
+            <div style={{ background: '#f0fff4', border: '1px solid #c6f6d5', borderRadius: '7px', padding: '7px 10px', marginBottom: '5px' }}>
+              <div style={{ fontSize: '9px', fontWeight: '700', color: '#2d6a2d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>White Paper</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px' }}>
+                {[['Start', '10:30'], ['Finish', '18:00'], ['Hours', '7:30']].map(([l, v]) => (
+                  <div key={l} style={{ textAlign: 'center', background: '#fff', borderRadius: '4px', padding: '4px 2px' }}>
+                    <div style={{ fontSize: '8px', color: '#888' }}>{l}</div>
+                    <div style={{ fontSize: '11px', fontWeight: '700', color: l === 'Hours' ? '#2d6a2d' : '#1a1a18' }}>{v}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div style={{ marginTop: '7px', background: '#e8f5e9', borderRadius: '6px', padding: '5px 8px', textAlign: 'center' }}>
-              <span style={{ fontSize: '10px', color: '#2d6a2d', fontWeight: '700' }}>All 3 papers auto-filled</span>
+
+            {/* Orange Paper */}
+            <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '7px', padding: '7px 10px', marginBottom: '5px' }}>
+              <div style={{ fontSize: '9px', fontWeight: '700', color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>Orange Paper</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '3px' }}>
+                {[['Start', '18:30'], ['Finish', '21:15'], ['Break', '0:15'], ['Hrs', '2:30']].map(([l, v]) => (
+                  <div key={l} style={{ textAlign: 'center', background: '#fff', borderRadius: '4px', padding: '4px 2px' }}>
+                    <div style={{ fontSize: '8px', color: '#888' }}>{l}</div>
+                    <div style={{ fontSize: '11px', fontWeight: '700', color: l === 'Hrs' ? '#b45309' : '#1a1a18' }}>{v}</div>
+                  </div>
+                ))}
+              </div>
             </div>
+
+            {/* Weekly Summary — horizontal */}
+            <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '7px', padding: '7px 10px' }}>
+              <div style={{ fontSize: '9px', fontWeight: '700', color: '#1565c0', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>Weekly Summary</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px' }}>
+                {[['Working hrs', '7:30'], ['Extra hrs', '2:30'], ['Total', '10:00']].map(([l, v]) => (
+                  <div key={l} style={{ textAlign: 'center', background: '#fff', borderRadius: '4px', padding: '4px 2px' }}>
+                    <div style={{ fontSize: '8px', color: '#888' }}>{l}</div>
+                    <div style={{ fontSize: '11px', fontWeight: '700', color: '#1565c0' }}>{v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
