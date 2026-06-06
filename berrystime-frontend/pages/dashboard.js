@@ -18,7 +18,7 @@ function minsToHHMM(m) {
 
 export default function Dashboard() {
   const router = useRouter()
-  const [worker, setWorker] = useState(getWorker)
+  const [worker, setWorker] = useState(null)
   const [entries, setEntries] = useState({})
   const [month, setMonth] = useState(new Date().getMonth() + 1)
   const [year, setYear] = useState(new Date().getFullYear())
@@ -37,7 +37,9 @@ export default function Dashboard() {
   useEffect(() => {
     if (!isLoggedIn()) { router.push('/login'); return }
     loadEntries()
-    api.get('/api/auth/me').then(res => setWorker(res.data.worker)).catch(() => {})
+    api.get('/api/auth/me')
+      .then(res => setWorker(res.data.worker))
+      .catch(() => setWorker(getWorker()))
   }, [month, year])
 
   async function loadEntries() {
