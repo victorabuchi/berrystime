@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import api from '../lib/api'
-import { getWorker, isLoggedIn, clearAuth } from '../lib/auth'
+import { getWorker, isLoggedIn, clearAuth, saveAuth } from '../lib/auth'
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 const VALID = ['09:00','09:15','09:30','09:45']
@@ -29,6 +29,10 @@ export default function Dashboard() {
   const [error, setError] = useState('')
   const [activeTab, setActiveTab] = useState('white')
   const [view, setView] = useState('list')
+  const [workNumModal, setWorkNumModal] = useState(false)
+  const [workNumInput, setWorkNumInput] = useState('')
+  const [workNumError, setWorkNumError] = useState('')
+  const [workNumSaving, setWorkNumSaving] = useState(false)
 
   useEffect(() => {
     if (!isLoggedIn()) { router.push('/login'); return }
@@ -59,6 +63,23 @@ export default function Dashboard() {
     })
     setEditDay(day)
     setViewDay(null)
+  }
+
+  async function saveWorkNumber() {
+    setWorkNumError('')
+    if (!workNumInput.trim()) { setWorkNumError('Work number is required'); return }
+    setWorkNumSaving(true)
+    try {
+      const res = await api.patch('/api/auth/work-number', { work_number: workNumInput.trim() })
+      saveAuth(res.data.token, res.data.worker)
+      setWorker(res.data.worker)
+      setWorkNumModal(false)
+      setWorkNumInput('')
+    } catch (err) {
+      setWorkNumError(err.response?.data?.error || 'Failed to update work number')
+    } finally {
+      setWorkNumSaving(false)
+    }
   }
 
   async function saveEntry() {
@@ -515,13 +536,39 @@ export default function Dashboard() {
             <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '22px', color: '#fff', lineHeight: 1 }}>Rannikon Puutarha</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {worker && <span style={{ fontSize: '13px', color: '#cfffcf' }}>#{worker.work_number} {worker.full_name}</span>}
+            {worker && (
+              <button onClick={() => { setWorkNumInput(worker.work_number || ''); setWorkNumError(''); setWorkNumModal(true) }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ fontSize: '13px', color: '#cfffcf' }}>#{worker.work_number} {worker.full_name}</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </button>
+            )}
             {worker?.role === 'admin' && (
               <button onClick={() => router.push('/admin')} style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#fff' }}>Admin</button>
             )}
             <button onClick={logout} style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#fff' }}>Sign out</button>
           </div>
         </div>
+
+        {/* Work number banner — shown when account has a temporary G-XXXXXX number */}
+        {worker?.work_number?.startsWith('G-') && (
+          <div style={{ background: '#fff3e0', borderBottom: '1px solid #fde0b0', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b45309" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <span style={{ fontSize: '13px', color: '#b45309', fontWeight: '600' }}>
+                Your account has a temporary work number ({worker.work_number}). Please set your official farm work number.
+              </span>
+            </div>
+            <button onClick={() => { setWorkNumInput(''); setWorkNumError(''); setWorkNumModal(true) }}
+              style={{ padding: '5px 14px', background: '#b45309', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap' }}>
+              Set work number
+            </button>
+          </div>
+        )}
 
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '12px 16px 16px' }}>
 
@@ -611,6 +658,45 @@ export default function Dashboard() {
 
         </div>
       </div>
+
+      {/* Work number modal */}
+      {workNumModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 500, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+          <div style={{ background: '#fff', borderRadius: '14px', padding: '28px', width: '100%', maxWidth: '380px', boxShadow: '0 24px 64px rgba(0,0,0,0.2)' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '6px' }}>Set your work number</h2>
+            <p style={{ fontSize: '13px', color: '#666', marginBottom: '20px', lineHeight: '1.5' }}>
+              Enter your official farm work number. This is the number assigned to you by the farm manager.
+            </p>
+            {workNumError && (
+              <div style={{ background: '#fdecea', border: '1px solid #ffc1c0', color: '#c0392b', borderRadius: '8px', padding: '8px 12px', fontSize: '13px', marginBottom: '14px' }}>
+                {workNumError}
+              </div>
+            )}
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px' }}>Work number</label>
+              <input
+                autoFocus
+                type="text"
+                placeholder="e.g. 334"
+                value={workNumInput}
+                onChange={e => setWorkNumInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && saveWorkNumber()}
+                style={{ width: '100%', padding: '10px 12px', fontSize: '15px', border: '1px solid #d0d7de', borderRadius: '8px', fontFamily: 'inherit', outline: 'none' }}
+              />
+            </div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button onClick={saveWorkNumber} disabled={workNumSaving}
+                style={{ flex: 1, padding: '11px', background: workNumSaving ? '#aaa' : '#2d6a2d', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '700', cursor: workNumSaving ? 'not-allowed' : 'pointer' }}>
+                {workNumSaving ? 'Saving...' : 'Save work number'}
+              </button>
+              <button onClick={() => setWorkNumModal(false)}
+                style={{ padding: '11px 18px', background: '#fff', color: '#333', border: '1px solid #ddd', borderRadius: '8px', fontSize: '14px', cursor: 'pointer' }}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

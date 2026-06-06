@@ -98,6 +98,34 @@ module.exports = async function authRoutes(fastify) {
     return reply.send({ worker: result.rows[0] })
   })
 
+  fastify.patch('/api/auth/work-number', {
+    onRequest: [fastify.authenticate]
+  }, async (request, reply) => {
+    const { work_number } = request.body
+    if (!work_number || !work_number.trim()) {
+      return reply.status(400).send({ error: 'Work number is required' })
+    }
+    const clean = work_number.trim()
+    const existing = await db.query(
+      'SELECT id FROM workers WHERE work_number = $1 AND id != $2',
+      [clean, request.user.id]
+    )
+    if (existing.rows[0]) {
+      return reply.status(409).send({ error: 'Work number ' + clean + ' is already taken' })
+    }
+    await db.query('UPDATE workers SET work_number = $1 WHERE id = $2', [clean, request.user.id])
+    const result = await db.query(
+      'SELECT id, work_number, full_name, email, role FROM workers WHERE id = $1',
+      [request.user.id]
+    )
+    const updated = result.rows[0]
+    const token = fastify.jwt.sign(
+      { id: updated.id, work_number: updated.work_number, full_name: updated.full_name },
+      { expiresIn: '30d' }
+    )
+    return reply.send({ token, worker: updated })
+  })
+
   fastify.post('/api/auth/forgot-password', async (request, reply) => {
     const { email } = request.body
     if (!email) return reply.status(400).send({ error: 'Email is required' })
