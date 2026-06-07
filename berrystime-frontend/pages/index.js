@@ -15,31 +15,47 @@ function addMins(t, add) {
   return String(Math.floor(total / 60) % 24).padStart(2, '0') + ':' + String(total % 60).padStart(2, '0')
 }
 
+const SCENARIOS = [
+  { start: '10:30', finish: '21:15', breakMins: 30 },
+  { start: '09:00', finish: '20:30', breakMins: 40 },
+  { start: '09:15', finish: '22:00', breakMins: 60 },
+]
+
 function AnimatedDemo() {
-  const [step, setStep] = useState(0)
+  const [tick, setTick] = useState(0)
+  const step = tick % 9
+  const scenarioIdx = Math.floor(tick / 9) % 3
 
   useEffect(() => {
     const delays = [700, 500, 1100, 500, 1100, 420, 280, 400, 3200]
-    const t = setTimeout(() => setStep(s => (s + 1) % 9), delays[step] ?? 1000)
+    const t = setTimeout(() => setTick(c => c + 1), delays[step] ?? 1000)
     return () => clearTimeout(t)
-  }, [step])
+  }, [tick])
 
-  const startVal = step >= 2 ? '10:30' : ''
-  const finishVal = step >= 4 ? '21:15' : ''
+  const sc = SCENARIOS[scenarioIdx]
+  const wFinish = addMins(sc.start, 450)
+  const oStart = addMins(sc.start, 450 + sc.breakMins)
+  const oMins = Math.max(0, toMins(sc.finish) - toMins(oStart) - 15)
+  const oHours = toHHMM(oMins)
+  const totalHours = toHHMM(450 + oMins)
+
+  const startVal = step >= 2 ? sc.start : ''
+  const finishVal = step >= 4 ? sc.finish : ''
   const breakActive = step >= 6
   const btnClick = step === 7
   const showResults = step === 8
 
+  const breakBtnLeft = [60, 148, 232][scenarioIdx]
   const cursorPos = [
-    { top: 0,   left: 0,   opacity: 0   },
-    { top: 155, left: 175, opacity: 1   },
-    { top: 155, left: 175, opacity: 1   },
-    { top: 212, left: 175, opacity: 1   },
-    { top: 212, left: 175, opacity: 1   },
-    { top: 265, left: 72,  opacity: 1   },
-    { top: 265, left: 72,  opacity: 1   },
-    { top: 308, left: 140, opacity: 1   },
-    { top: 308, left: 140, opacity: 0.3 },
+    { top: 0,   left: 0,            opacity: 0   },
+    { top: 155, left: 175,          opacity: 1   },
+    { top: 155, left: 175,          opacity: 1   },
+    { top: 212, left: 175,          opacity: 1   },
+    { top: 212, left: 175,          opacity: 1   },
+    { top: 265, left: breakBtnLeft, opacity: 1   },
+    { top: 265, left: breakBtnLeft, opacity: 1   },
+    { top: 308, left: 140,          opacity: 1   },
+    { top: 308, left: 140,          opacity: 0.3 },
   ][step]
 
   return (
@@ -104,15 +120,15 @@ function AnimatedDemo() {
           <div style={{ marginBottom: '13px' }}>
             <div style={{ fontSize: '10px', color: '#888', marginBottom: '4px', fontWeight: '500' }}>Break</div>
             <div style={{ display: 'flex', gap: '4px' }}>
-              {[['30 min', true], ['45 min', false], ['60 min', false]].map(([label, isDefault]) => (
-                <div key={label} style={{
+              {[30, 40, 60].map(b => (
+                <div key={b} style={{
                   flex: 1, textAlign: 'center', padding: '5px 3px', fontSize: '11px', fontWeight: '600',
-                  border: `1px solid ${breakActive && isDefault ? '#2d6a2d' : '#ddd'}`,
+                  border: `1px solid ${breakActive && b === sc.breakMins ? '#2d6a2d' : '#ddd'}`,
                   borderRadius: '5px',
-                  background: breakActive && isDefault ? '#f0fff0' : '#fafaf9',
-                  color: breakActive && isDefault ? '#2d6a2d' : '#999',
+                  background: breakActive && b === sc.breakMins ? '#f0fff0' : '#fafaf9',
+                  color: breakActive && b === sc.breakMins ? '#2d6a2d' : '#999',
                   transition: 'all 0.2s'
-                }}>{label}</div>
+                }}>{b} min</div>
               ))}
             </div>
           </div>
@@ -126,13 +142,13 @@ function AnimatedDemo() {
             Calculate hours
           </div>
 
-          <div style={{ overflow: 'hidden', maxHeight: showResults ? '240px' : '0', transition: 'max-height 0.5s ease', marginTop: showResults ? '10px' : '0' }}>
+          <div style={{ overflow: 'hidden', maxHeight: showResults ? '260px' : '0', transition: 'max-height 0.5s ease', marginTop: showResults ? '10px' : '0' }}>
 
             {/* White Paper */}
             <div style={{ background: '#f0fff4', border: '1px solid #c6f6d5', borderRadius: '7px', padding: '7px 10px', marginBottom: '5px' }}>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#2d6a2d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>White Paper</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '3px' }}>
-                {[['Start', '10:30'], ['Finish', '18:00'], ['Break', '30 min'], ['Hours', '7:30']].map(([l, v]) => (
+                {[['Start', sc.start], ['Finish', wFinish], ['Break', sc.breakMins + ' min'], ['Hours', '7:30']].map(([l, v]) => (
                   <div key={l} style={{ textAlign: 'center', background: '#fff', borderRadius: '4px', padding: '4px 2px' }}>
                     <div style={{ fontSize: '8px', color: '#888' }}>{l}</div>
                     <div style={{ fontSize: '11px', fontWeight: '700', color: l === 'Hours' ? '#2d6a2d' : '#1a1a18' }}>{v}</div>
@@ -145,7 +161,7 @@ function AnimatedDemo() {
             <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '7px', padding: '7px 10px', marginBottom: '5px' }}>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>Orange Paper</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '3px' }}>
-                {[['Start', '18:30'], ['Finish', '21:15'], ['Break', '0:15'], ['Hrs', '2:30']].map(([l, v]) => (
+                {[['Start', oStart], ['Finish', sc.finish], ['Break', '0:15'], ['Hrs', oHours]].map(([l, v]) => (
                   <div key={l} style={{ textAlign: 'center', background: '#fff', borderRadius: '4px', padding: '4px 2px' }}>
                     <div style={{ fontSize: '8px', color: '#888' }}>{l}</div>
                     <div style={{ fontSize: '11px', fontWeight: '700', color: l === 'Hrs' ? '#b45309' : '#1a1a18' }}>{v}</div>
@@ -158,7 +174,7 @@ function AnimatedDemo() {
             <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '7px', padding: '7px 10px' }}>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#1565c0', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>Weekly Summary</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px' }}>
-                {[['Working hrs', '7:30'], ['Extra hrs', '2:30'], ['Total', '10:00']].map(([l, v]) => (
+                {[['Working hrs', '7:30'], ['Extra hrs', oHours], ['Total', totalHours]].map(([l, v]) => (
                   <div key={l} style={{ textAlign: 'center', background: '#fff', borderRadius: '4px', padding: '4px 2px' }}>
                     <div style={{ fontSize: '8px', color: '#888' }}>{l}</div>
                     <div style={{ fontSize: '11px', fontWeight: '700', color: '#1565c0' }}>{v}</div>
@@ -292,6 +308,8 @@ export default function Home() {
       <Head>
         <title>Rannikon Puutarha — Work Hours Made Easy</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
       </Head>
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0}
@@ -394,7 +412,7 @@ export default function Home() {
             <p style={{ fontSize: '16px', color: '#666', maxWidth: '440px', margin: '0 auto', lineHeight: '1.6' }}>Whether you pick berries or manage the team — Rannikon has you covered</p>
           </div>
 
-          <div className="features-grid" style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+          <div className="features-grid" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
 
             {/* Workers */}
             <div style={{ flex: '1', background: '#fafaf8', border: '1px solid #e8e8e3', borderRadius: '20px', padding: '32px', minWidth: '280px' }}>
@@ -422,10 +440,8 @@ export default function Home() {
             </div>
 
             {/* Divider */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '80px', gap: '8px', opacity: 0.4 }}>
-              <div style={{ width: '1px', height: '60px', background: '#ccc' }} />
-              <span style={{ fontSize: '11px', color: '#999', fontWeight: '500' }}>AND</span>
-              <div style={{ width: '1px', height: '60px', background: '#ccc' }} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 4px', alignSelf: 'center' }}>
+              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '28px', color: '#2d6a2d', opacity: 0.55, whiteSpace: 'nowrap' }}>and</span>
             </div>
 
             {/* Supervisors */}
