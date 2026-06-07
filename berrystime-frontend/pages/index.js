@@ -477,50 +477,142 @@ export default function Home() {
         <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '52px' }}>
             <h2 style={{ fontSize: 'clamp(22px,4vw,40px)', fontWeight: '800', letterSpacing: '-0.8px', marginBottom: '10px' }}>How it works</h2>
-            <p style={{ fontSize: '16px', color: '#666', maxWidth: '400px', margin: '0 auto' }}>Three steps to perfectly filled paper forms every day</p>
+            <p style={{ fontSize: '16px', color: '#666', maxWidth: '460px', margin: '0 auto' }}>Four simple steps, whether you are a worker or a supervisor</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: '20px' }}>
-            {[
-              {
-                n: '01',
-                icon: (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d6a2d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+
+          {/* Two columns: workers + supervisors */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: '40px' }}>
+
+            {/* Workers column */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+                <div style={{ width: '36px', height: '36px', background: '#2d6a2d', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
                   </svg>
-                ),
-                t: 'Enter your times',
-                d: "Open the app, find today's date, and type your actual start time and finish time."
-              },
-              {
-                n: '02',
-                icon: (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d6a2d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                  </svg>
-                ),
-                t: 'Rannikon calculates',
-                d: 'All columns for white paper, orange paper, and weekly summary fill instantly and automatically.'
-              },
-              {
-                n: '03',
-                icon: (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d6a2d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
-                  </svg>
-                ),
-                t: 'Copy to paper form',
-                d: 'See the exact values to write on your paper forms. Correct every time, zero math errors.'
-              },
-            ].map(({ n, icon, t, d }) => (
-              <div key={n} className="card-hover" style={{ background: '#fff', border: '1px solid #e8e8e3', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 16px rgba(0,0,0,0.04)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-                  <div style={{ width: '40px', height: '40px', background: '#e8f5e9', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</div>
-                  <span style={{ fontSize: '12px', fontWeight: '700', color: '#2d6a2d', fontFamily: 'monospace' }}>{n}</span>
                 </div>
-                <h3 style={{ fontSize: '17px', fontWeight: '700', letterSpacing: '-0.2px', marginBottom: '8px' }}>{t}</h3>
-                <p style={{ fontSize: '14px', color: '#666', lineHeight: '1.6' }}>{d}</p>
+                <h3 style={{ fontSize: '18px', fontWeight: '800', letterSpacing: '-0.3px', color: '#1a1a18' }}>For workers</h3>
               </div>
-            ))}
+              {[
+                {
+                  n: '01',
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2d6a2d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  ),
+                  t: 'Enter your times',
+                  d: "Open the app, find today's row, and type your actual start time and finish time."
+                },
+                {
+                  n: '02',
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2d6a2d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                    </svg>
+                  ),
+                  t: 'Rannikon calculates everything',
+                  d: 'All four paper columns fill instantly and automatically. No math, no mistakes.'
+                },
+                {
+                  n: '03',
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2d6a2d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                  ),
+                  t: 'Copy numbers to your paper form',
+                  d: 'See the exact values to write on your white, orange, and green papers. Correct every time.'
+                },
+                {
+                  n: '04',
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2d6a2d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                  ),
+                  t: 'Submit forms to your supervisor',
+                  d: 'Send your completed timesheet forms directly to your supervisor or house master in one tap.'
+                },
+              ].map(({ n, icon, t, d }) => (
+                <div key={n} style={{ display: 'flex', gap: '14px', marginBottom: '16px' }}>
+                  <div style={{ flexShrink: 0, width: '36px', height: '36px', background: '#e8f5e9', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</div>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: '700', color: '#2d6a2d', fontFamily: 'monospace' }}>{n}</span>
+                      <h4 style={{ fontSize: '15px', fontWeight: '700', letterSpacing: '-0.1px', color: '#1a1a18' }}>{t}</h4>
+                    </div>
+                    <p style={{ fontSize: '13px', color: '#666', lineHeight: '1.6' }}>{d}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Supervisors column */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+                <div style={{ width: '36px', height: '36px', background: '#1a3a5c', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+                  </svg>
+                </div>
+                <h3 style={{ fontSize: '18px', fontWeight: '800', letterSpacing: '-0.3px', color: '#1a1a18' }}>For supervisors</h3>
+              </div>
+              {[
+                {
+                  n: '01',
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                  ),
+                  t: 'Record worker arrivals',
+                  d: "Log each worker's work number and start time as they arrive. The system tracks and calculates their hours automatically."
+                },
+                {
+                  n: '02',
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                  ),
+                  t: 'Send daily PDF to house master',
+                  d: 'At the end of the day, download a full PDF of all workers and their hours and send it to the house master in one click.'
+                },
+                {
+                  n: '03',
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                  ),
+                  t: 'Assign numbers, workdays and holidays',
+                  d: 'Easily set work numbers for new workers, manage working days, and mark holidays for each person in your team.'
+                },
+                {
+                  n: '04',
+                  icon: (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                  ),
+                  t: 'Share reports with each group',
+                  d: 'Send all four timesheet papers to each group captain or house boss. Group captains can then forward the full paperwork from their workers directly to the house master.'
+                },
+              ].map(({ n, icon, t, d }) => (
+                <div key={n} style={{ display: 'flex', gap: '14px', marginBottom: '16px' }}>
+                  <div style={{ flexShrink: 0, width: '36px', height: '36px', background: '#e8eef5', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</div>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
+                      <span style={{ fontSize: '10px', fontWeight: '700', color: '#1a3a5c', fontFamily: 'monospace' }}>{n}</span>
+                      <h4 style={{ fontSize: '15px', fontWeight: '700', letterSpacing: '-0.1px', color: '#1a1a18' }}>{t}</h4>
+                    </div>
+                    <p style={{ fontSize: '13px', color: '#666', lineHeight: '1.6' }}>{d}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
           </div>
         </div>
       </section>

@@ -294,9 +294,10 @@ export default function Register() {
 
           <div style={{ position: 'relative', maxWidth: '400px' }}>
 
-            {/* Logo — natural aspect ratio, soft rounded corners */}
-            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '72px', width: 'auto', borderRadius: '12px', display: 'block', marginBottom: '8px' }} />
-            <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '28px', color: '#4ade80', display: 'block', marginBottom: '28px', lineHeight: 1 }}>Rannikon Puutarha</span>
+            <div onClick={() => router.push('/')} style={{ cursor: 'pointer', display: 'inline-block', marginBottom: '28px' }}>
+              <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '72px', width: 'auto', borderRadius: '12px', display: 'block', marginBottom: '8px' }} />
+              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '28px', color: '#4ade80', display: 'block', lineHeight: 1 }}>Rannikon Puutarha</span>
+            </div>
 
             <h1 style={{ fontSize: 'clamp(24px,3.5vw,36px)', fontWeight: '700', lineHeight: 1.15, marginBottom: '10px', color: '#fff' }}>
               Create your account
@@ -334,8 +335,8 @@ export default function Register() {
         {/* RIGHT PANEL */}
         <div className="reg-right" style={{ width: '460px', maxWidth: '460px', background: '#fff', overflowY: 'auto', padding: '40px 36px 80px', display: 'flex', flexDirection: 'column' }}>
 
-          {/* Mobile-only header — mirrors login page */}
-          <div className="reg-mobile-top">
+          {/* Mobile-only header */}
+          <div className="reg-mobile-top" onClick={() => router.push('/')} style={{ cursor: 'pointer' }}>
             <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '48px', width: 'auto', marginBottom: '14px' }} />
             <h1 style={{ fontSize: '24px', fontWeight: '300', letterSpacing: '-0.3px', color: '#1a1a18' }}>Create your account</h1>
           </div>
