@@ -20,19 +20,32 @@ function addMins(t, add) {
 function calculate(actualStart, actualFinish, breakMins) {
   const totalBreak = Math.max(30, breakMins || 30)
   const extraBreak = totalBreak - 30
-  const totalWorked = toMins(actualFinish) - toMins(actualStart) - totalBreak
-  const whiteMins = Math.min(totalWorked, 450)
-  const orangeMins = Math.max(0, totalWorked - 450)
+
+  // White window = 8h work + 30min eating break = 510 mins from actual start
+  const WHITE_WINDOW = 510
+  const workedMins = toMins(actualFinish) - toMins(actualStart)
+  const hasFullWhite = workedMins >= WHITE_WINDOW
 
   const whiteStart = actualStart
-  const whiteFinish = addMins(actualStart, 450 + extraBreak)
-  const whiteHours = toHHMM(whiteMins)
+  let whiteFinish, whiteHours, orangeStart, orangeFinish, orangeMins, orangeHours, totalHours
 
-  const orangeStart = addMins(actualStart, 480 + extraBreak)
-  const orangeFinish = actualFinish
-  const orangeHours = toHHMM(orangeMins)
-
-  const totalHours = toHHMM(totalWorked)
+  if (hasFullWhite) {
+    whiteFinish = addMins(actualStart, WHITE_WINDOW)
+    whiteHours = '8:00'
+    orangeStart = whiteFinish
+    orangeFinish = actualFinish
+    orangeMins = Math.max(0, toMins(actualFinish) - toMins(orangeStart) - extraBreak)
+    orangeHours = toHHMM(orangeMins)
+    totalHours = toHHMM(480 + orangeMins)
+  } else {
+    whiteFinish = actualFinish
+    whiteHours = toHHMM(Math.max(0, workedMins - totalBreak))
+    orangeStart = actualFinish
+    orangeFinish = actualFinish
+    orangeMins = 0
+    orangeHours = '0:00'
+    totalHours = whiteHours
+  }
 
   return {
     white_start: whiteStart,

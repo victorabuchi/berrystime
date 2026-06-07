@@ -33,11 +33,12 @@ function AnimatedDemo() {
   }, [tick])
 
   const sc = SCENARIOS[scenarioIdx]
-  const wFinish = addMins(sc.start, 450)
-  const oStart = addMins(sc.start, 450 + sc.breakMins)
-  const oMins = Math.max(0, toMins(sc.finish) - toMins(oStart) - 15)
+  const extraBreak = sc.breakMins - 30
+  const wFinish = addMins(sc.start, 510)
+  const oStart = wFinish
+  const oMins = Math.max(0, toMins(sc.finish) - toMins(oStart) - extraBreak)
   const oHours = toHHMM(oMins)
-  const totalHours = toHHMM(450 + oMins)
+  const totalHours = toHHMM(480 + oMins)
 
   const startVal = step >= 2 ? sc.start : ''
   const finishVal = step >= 4 ? sc.finish : ''
@@ -148,7 +149,7 @@ function AnimatedDemo() {
             <div style={{ background: '#f0fff4', border: '1px solid #c6f6d5', borderRadius: '7px', padding: '7px 10px', marginBottom: '5px' }}>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#2d6a2d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>White Paper</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '3px' }}>
-                {[['Start', sc.start], ['Finish', wFinish], ['Break', sc.breakMins + ' min'], ['Hours', '7:30']].map(([l, v]) => (
+                {[['Start', sc.start], ['Finish', wFinish], ['Break', extraBreak + ' min'], ['Hours', '8:00']].map(([l, v]) => (
                   <div key={l} style={{ textAlign: 'center', background: '#fff', borderRadius: '4px', padding: '4px 2px' }}>
                     <div style={{ fontSize: '8px', color: '#888' }}>{l}</div>
                     <div style={{ fontSize: '11px', fontWeight: '700', color: l === 'Hours' ? '#2d6a2d' : '#1a1a18' }}>{v}</div>
@@ -161,7 +162,7 @@ function AnimatedDemo() {
             <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '7px', padding: '7px 10px', marginBottom: '5px' }}>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>Orange Paper</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '3px' }}>
-                {[['Start', oStart], ['Finish', sc.finish], ['Break', '0:15'], ['Hrs', oHours]].map(([l, v]) => (
+                {[['Start', oStart], ['Finish', sc.finish], ['Break', extraBreak + ' min'], ['Hrs', oHours]].map(([l, v]) => (
                   <div key={l} style={{ textAlign: 'center', background: '#fff', borderRadius: '4px', padding: '4px 2px' }}>
                     <div style={{ fontSize: '8px', color: '#888' }}>{l}</div>
                     <div style={{ fontSize: '11px', fontWeight: '700', color: l === 'Hrs' ? '#b45309' : '#1a1a18' }}>{v}</div>
@@ -174,7 +175,7 @@ function AnimatedDemo() {
             <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '7px', padding: '7px 10px' }}>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#1565c0', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>Weekly Summary</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px' }}>
-                {[['Working hrs', '7:30'], ['Extra hrs', oHours], ['Total', totalHours]].map(([l, v]) => (
+                {[['Working hrs', '8:00'], ['Extra hrs', oHours], ['Total', totalHours]].map(([l, v]) => (
                   <div key={l} style={{ textAlign: 'center', background: '#fff', borderRadius: '4px', padding: '4px 2px' }}>
                     <div style={{ fontSize: '8px', color: '#888' }}>{l}</div>
                     <div style={{ fontSize: '11px', fontWeight: '700', color: '#1565c0' }}>{v}</div>
@@ -219,10 +220,19 @@ export default function Home() {
 
   function calc() {
     if (!date || !start || !finish) { alert('Please fill in date, start time, and finish time'); return }
-    const wFinish = addMins(start, 450)
-    const oStart = addMins(start, 450 + breakMins)
-    const oMins = Math.max(0, toMins(finish) - toMins(oStart) - 15)
-    setRes({ date, work, wStart: start, wFinish, oStart, oFinish: finish, oHours: toHHMM(oMins), total: toHHMM(450 + oMins) })
+    const totalBreak = Math.max(30, breakMins)
+    const extraBreak = totalBreak - 30
+    const WHITE_WINDOW = 510
+    const workedMins = toMins(finish) - toMins(start)
+    if (workedMins >= WHITE_WINDOW) {
+      const wFinish = addMins(start, WHITE_WINDOW)
+      const oStart = wFinish
+      const oMins = Math.max(0, toMins(finish) - toMins(oStart) - extraBreak)
+      setRes({ date, work, wStart: start, wFinish, oStart, oFinish: finish, wHours: '8:00', oHours: toHHMM(oMins), total: toHHMM(480 + oMins) })
+    } else {
+      const wHours = toHHMM(Math.max(0, workedMins - totalBreak))
+      setRes({ date, work, wStart: start, wFinish: finish, oStart: finish, oFinish: finish, wHours, oHours: '0:00', total: wHours })
+    }
   }
 
   const workerFeatures = [
@@ -662,7 +672,7 @@ export default function Home() {
                 <div style={{ background: '#fff', border: '2px solid #2d6a2d', borderRadius: '14px', padding: '16px' }}>
                   <p style={{ fontSize: '11px', fontWeight: '700', color: '#2d6a2d', letterSpacing: '0.6px', textTransform: 'uppercase', marginBottom: '12px' }}>White paper</p>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
-                    {[['Start', res.wStart], ['Finish', res.wFinish], ['Hours', '7:30']].map(([l, v]) => (
+                    {[['Start', res.wStart], ['Finish', res.wFinish], ['Hours', res.wHours]].map(([l, v]) => (
                       <div key={l} style={{ textAlign: 'center', background: '#f5f5f2', borderRadius: '8px', padding: '8px 4px' }}>
                         <div style={{ fontSize: '10px', color: '#888', marginBottom: '3px' }}>{l}</div>
                         <div style={{ fontSize: '15px', fontWeight: '700' }}>{v}</div>
