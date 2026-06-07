@@ -265,10 +265,11 @@ export default function Register() {
         .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:#1a2e1a;border-top:1px solid rgba(255,255,255,0.1);padding:12px 20px;font-size:12px;color:rgba(255,255,255,0.65);z-index:1000}
         .cookie-banner a{color:#4ade80}
         .cookie-banner a:hover{text-decoration:underline}
-        @media(max-width:900px){
-          .reg-layout{flex-direction:column!important}
-          .reg-left{padding:40px 24px 24px!important;min-height:unset!important}
-          .reg-right{width:100%!important;max-width:100%!important;padding:24px 20px 100px!important}
+        .reg-mobile-top{display:none}
+        @media(max-width:768px){
+          .reg-left{display:none!important}
+          .reg-right{width:100%!important;max-width:100%!important;background:#fff!important;padding:40px 20px 80px!important;min-height:100vh}
+          .reg-mobile-top{display:flex;flex-direction:column;align-items:center;margin-bottom:20px}
         }
       `}</style>
 
@@ -326,6 +327,12 @@ export default function Register() {
 
         {/* RIGHT PANEL */}
         <div className="reg-right" style={{ width: '460px', maxWidth: '460px', background: '#fff', overflowY: 'auto', padding: '40px 36px 80px', display: 'flex', flexDirection: 'column' }}>
+
+          {/* Mobile-only header — mirrors login page */}
+          <div className="reg-mobile-top">
+            <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '48px', width: 'auto', marginBottom: '14px' }} />
+            <h1 style={{ fontSize: '24px', fontWeight: '300', letterSpacing: '-0.3px', color: '#1a1a18' }}>Create your account</h1>
+          </div>
 
           <p style={{ textAlign: 'right', fontSize: '13px', color: '#666', marginBottom: '20px' }}>
             Already have an account?{' '}

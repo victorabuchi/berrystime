@@ -19,25 +19,27 @@ function AnimatedDemo() {
   const [step, setStep] = useState(0)
 
   useEffect(() => {
-    const delays = [700, 500, 1100, 500, 1100, 450, 300, 3200]
-    const t = setTimeout(() => setStep(s => (s + 1) % 8), delays[step] ?? 1000)
+    const delays = [700, 500, 1100, 500, 1100, 420, 280, 400, 3200]
+    const t = setTimeout(() => setStep(s => (s + 1) % 9), delays[step] ?? 1000)
     return () => clearTimeout(t)
   }, [step])
 
   const startVal = step >= 2 ? '10:30' : ''
   const finishVal = step >= 4 ? '21:15' : ''
-  const btnClick = step === 6
-  const showResults = step === 7
+  const breakActive = step >= 6
+  const btnClick = step === 7
+  const showResults = step === 8
 
   const cursorPos = [
     { top: 0,   left: 0,   opacity: 0   },
     { top: 155, left: 175, opacity: 1   },
     { top: 155, left: 175, opacity: 1   },
-    { top: 210, left: 175, opacity: 1   },
-    { top: 210, left: 175, opacity: 1   },
-    { top: 247, left: 140, opacity: 1   },
-    { top: 247, left: 140, opacity: 1   },
-    { top: 247, left: 140, opacity: 0.3 },
+    { top: 212, left: 175, opacity: 1   },
+    { top: 212, left: 175, opacity: 1   },
+    { top: 265, left: 72,  opacity: 1   },
+    { top: 265, left: 72,  opacity: 1   },
+    { top: 308, left: 140, opacity: 1   },
+    { top: 308, left: 140, opacity: 0.3 },
   ][step]
 
   return (
@@ -83,7 +85,7 @@ function AnimatedDemo() {
             </div>
           </div>
 
-          <div style={{ marginBottom: '13px' }}>
+          <div style={{ marginBottom: '9px' }}>
             <div style={{ fontSize: '10px', color: '#888', marginBottom: '3px', fontWeight: '500' }}>Finish time</div>
             <div style={{
               border: (step === 3 || step === 4) ? '1.5px solid #2d6a2d' : '1px solid #ddd',
@@ -96,6 +98,22 @@ function AnimatedDemo() {
               {(step === 3 || step === 4) && (
                 <span style={{ display: 'inline-block', width: '1.5px', height: '13px', background: '#2d6a2d', marginLeft: '1px', verticalAlign: 'text-bottom', animation: 'blinkCursor 1s step-end infinite' }} />
               )}
+            </div>
+          </div>
+
+          <div style={{ marginBottom: '13px' }}>
+            <div style={{ fontSize: '10px', color: '#888', marginBottom: '4px', fontWeight: '500' }}>Break</div>
+            <div style={{ display: 'flex', gap: '4px' }}>
+              {[['30 min', true], ['45 min', false], ['60 min', false]].map(([label, isDefault]) => (
+                <div key={label} style={{
+                  flex: 1, textAlign: 'center', padding: '5px 3px', fontSize: '11px', fontWeight: '600',
+                  border: `1px solid ${breakActive && isDefault ? '#2d6a2d' : '#ddd'}`,
+                  borderRadius: '5px',
+                  background: breakActive && isDefault ? '#f0fff0' : '#fafaf9',
+                  color: breakActive && isDefault ? '#2d6a2d' : '#999',
+                  transition: 'all 0.2s'
+                }}>{label}</div>
+              ))}
             </div>
           </div>
 
@@ -113,8 +131,8 @@ function AnimatedDemo() {
             {/* White Paper */}
             <div style={{ background: '#f0fff4', border: '1px solid #c6f6d5', borderRadius: '7px', padding: '7px 10px', marginBottom: '5px' }}>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#2d6a2d', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>White Paper</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px' }}>
-                {[['Start', '10:30'], ['Finish', '18:00'], ['Hours', '7:30']].map(([l, v]) => (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '3px' }}>
+                {[['Start', '10:30'], ['Finish', '18:00'], ['Break', '30 min'], ['Hours', '7:30']].map(([l, v]) => (
                   <div key={l} style={{ textAlign: 'center', background: '#fff', borderRadius: '4px', padding: '4px 2px' }}>
                     <div style={{ fontSize: '8px', color: '#888' }}>{l}</div>
                     <div style={{ fontSize: '11px', fontWeight: '700', color: l === 'Hours' ? '#2d6a2d' : '#1a1a18' }}>{v}</div>
@@ -136,7 +154,7 @@ function AnimatedDemo() {
               </div>
             </div>
 
-            {/* Weekly Summary — horizontal */}
+            {/* Weekly Summary */}
             <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '7px', padding: '7px 10px' }}>
               <div style={{ fontSize: '9px', fontWeight: '700', color: '#1565c0', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px' }}>Weekly Summary</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px' }}>
@@ -174,18 +192,19 @@ export default function Home() {
   const [work, setWork] = useState('')
   const [start, setStart] = useState('')
   const [finish, setFinish] = useState('')
+  const [breakMins, setBreakMins] = useState(30)
   const [res, setRes] = useState(null)
   const [activeFeature, setActiveFeature] = useState(0)
 
   useEffect(() => {
-    const t = setInterval(() => setActiveFeature(s => (s + 1) % 3), 3000)
+    const t = setInterval(() => setActiveFeature(s => (s + 1) % 4), 3000)
     return () => clearInterval(t)
   }, [])
 
   function calc() {
     if (!date || !start || !finish) { alert('Please fill in date, start time, and finish time'); return }
     const wFinish = addMins(start, 450)
-    const oStart = addMins(start, 480)
+    const oStart = addMins(start, 450 + breakMins)
     const oMins = Math.max(0, toMins(finish) - toMins(oStart) - 15)
     setRes({ date, work, wStart: start, wFinish, oStart, oFinish: finish, oHours: toHHMM(oMins), total: toHHMM(450 + oMins) })
   }
@@ -198,7 +217,7 @@ export default function Home() {
         </svg>
       ),
       title: 'Calculate hours instantly',
-      desc: 'Enter actual start and finish time. All 3 paper forms filled automatically.'
+      desc: 'Enter actual start and finish time. All paper forms filled automatically.'
     },
     {
       icon: (
@@ -218,6 +237,15 @@ export default function Home() {
       title: 'Weekly summary auto-built',
       desc: 'Your weekly totals calculate automatically as you add daily entries.'
     },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      ),
+      title: 'Submit forms to supervisor',
+      desc: 'Submit your completed forms directly to your supervisor for review and approval.'
+    },
   ]
 
   const staffFeatures = [
@@ -229,6 +257,15 @@ export default function Home() {
       ),
       title: 'View all workers',
       desc: "See every worker's timesheet in one admin panel."
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+        </svg>
+      ),
+      title: 'Record workers time automatically',
+      desc: "Workers' hours are auto-calculated and recorded directly in the system."
     },
     {
       icon: (
@@ -322,7 +359,7 @@ export default function Home() {
               Farm work hours,<br /><span style={{ color: '#2d6a2d' }}>done in seconds</span>
             </h1>
             <p className="fade-up" style={{ fontSize: '17px', color: '#555', lineHeight: '1.7', marginBottom: '30px', maxWidth: '420px', animationDelay: '0.2s' }}>
-              Enter your start and finish time. Rannikon automatically calculates and fills all your paper forms — white paper, orange paper, and weekly summary. Zero mistakes.
+              Enter your start and finish time. Rannikon automatically calculates and fills all your paper forms: white paper, orange paper, and weekly summary. Zero mistakes.
             </p>
             <div className="fade-up" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', animationDelay: '0.3s' }}>
               <button className="cta-btn" onClick={() => router.push('/register')} style={{ padding: '13px 26px', background: '#2d6a2d', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: '700', cursor: 'pointer', color: '#fff' }}>
@@ -334,7 +371,7 @@ export default function Home() {
               </a>
             </div>
             <div style={{ display: 'flex', gap: '32px', marginTop: '36px', flexWrap: 'wrap' }}>
-              {[['500+', 'Workers'], ['3', 'Papers auto-filled'], ['0', 'Errors']].map(([n, l]) => (
+              {[['500+', 'Workers'], ['4', 'All papers auto-filled'], ['0', 'Errors']].map(([n, l]) => (
                 <div key={l}>
                   <div style={{ fontSize: '22px', fontWeight: '800', color: '#2d6a2d', letterSpacing: '-0.5px' }}>{n}</div>
                   <div style={{ fontSize: '12px', color: '#999', marginTop: '2px' }}>{l}</div>
@@ -492,6 +529,21 @@ export default function Home() {
                   <input className="calc-inp" style={{ width: '100%', padding: '11px 13px', fontSize: '15px', border: '1px solid #ddd', borderRadius: '9px', background: '#fff', fontFamily: 'inherit', transition: 'border-color 0.15s' }} placeholder={ph} value={v} onChange={fn} />
                 </div>
               ))}
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '7px', color: '#333' }}>Break duration</label>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {[30, 45, 60].map(b => (
+                    <button key={b} type="button" onClick={() => setBreakMins(b)} style={{
+                      flex: 1, padding: '10px', fontSize: '14px', fontWeight: '600', cursor: 'pointer',
+                      border: `1.5px solid ${breakMins === b ? '#2d6a2d' : '#ddd'}`,
+                      borderRadius: '9px',
+                      background: breakMins === b ? '#f0fff0' : '#fff',
+                      color: breakMins === b ? '#2d6a2d' : '#777',
+                      transition: 'all 0.15s'
+                    }}>{b} min</button>
+                  ))}
+                </div>
+              </div>
               <button className="cta-btn" onClick={calc} style={{ width: '100%', padding: '13px', background: '#2d6a2d', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '15px', fontWeight: '700', cursor: 'pointer', marginTop: '4px' }}>
                 Calculate my hours
               </button>
