@@ -827,6 +827,9 @@ export default function Dashboard() {
                 </svg>
               </button>
             )}
+            {worker?.role === 'admin' && (
+              <button onClick={() => router.push('/admin')} style={{ padding: '6px 14px', background: '#fff', border: '1px solid #2d6a2d', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#2d6a2d', fontWeight: '600' }}>Admin</button>
+            )}
             <button onClick={logout} style={{ padding: '6px 14px', background: '#2d6a2d', border: 'none', borderRadius: '6px', fontSize: '13px', cursor: 'pointer', color: '#fff', fontWeight: '600' }}>Sign out</button>
           </div>
         </div>
