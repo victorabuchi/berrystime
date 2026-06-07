@@ -24,7 +24,7 @@ export default function ForgotPassword() {
 
   return (
     <>
-      <Head><title>Forgot Password — Rannikon Puutarha</title><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
+      <Head><title>Forgot Password | Rannikon</title><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0}
         body{font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a18;-webkit-font-smoothing:antialiased}

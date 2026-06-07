@@ -52,7 +52,7 @@ export default function ResetPassword() {
 
   return (
     <>
-      <Head><title>Reset Password — Rannikon Puutarha</title><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
+      <Head><title>Reset Password | Rannikon</title><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0}
         body{font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a18;-webkit-font-smoothing:antialiased}

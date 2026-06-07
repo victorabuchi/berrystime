@@ -306,7 +306,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Rannikon Puutarha — Work Hours Made Easy</title>
+        <title>Rannikon Puutarha: Work Hours Made Easy</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
@@ -409,7 +409,7 @@ export default function Home() {
         <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '52px' }}>
             <h2 style={{ fontSize: 'clamp(22px,4vw,40px)', fontWeight: '800', letterSpacing: '-0.8px', marginBottom: '10px' }}>Built for everyone at the farm</h2>
-            <p style={{ fontSize: '16px', color: '#666', maxWidth: '440px', margin: '0 auto', lineHeight: '1.6' }}>Whether you pick berries or manage the team — Rannikon has you covered</p>
+            <p style={{ fontSize: '16px', color: '#666', maxWidth: '440px', margin: '0 auto', lineHeight: '1.6' }}>Whether you pick berries or manage the team, Rannikon has you covered</p>
           </div>
 
           <div className="features-grid" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
@@ -464,7 +464,7 @@ export default function Home() {
                 ))}
               </div>
               <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '12px 16px', textAlign: 'center' }}>
-                <span style={{ fontSize: '13px', color: '#888', fontWeight: '500' }}>Admin panel — coming soon</span>
+                <span style={{ fontSize: '13px', color: '#888', fontWeight: '500' }}>Admin panel (coming soon)</span>
               </div>
             </div>
 

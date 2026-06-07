@@ -122,7 +122,7 @@ export default function AdminPanel() {
   return (
     <>
       <Head>
-        <title>Admin — Rannikon Puutarha</title>
+        <title>Admin | Rannikon</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
@@ -188,7 +188,7 @@ export default function AdminPanel() {
           {selectedWorker && (
             <button className="btn" onClick={() => setView('timesheet')}
               style={{ background: view === 'timesheet' ? '#2d6a2d' : '#fff', color: view === 'timesheet' ? '#fff' : '#333', border: '1px solid #ddd' }}>
-              {selectedWorker.full_name} — Timesheet
+              {selectedWorker.full_name}: Timesheet
             </button>
           )}
         </div>
@@ -274,7 +274,7 @@ export default function AdminPanel() {
           <div>
             <div style={{ background: '#fff', border: '1px solid #e8e8e3', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
               <div>
-                <h2 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '4px' }}>{selectedWorker.full_name} — #{selectedWorker.work_number}</h2>
+                <h2 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '4px' }}>{selectedWorker.full_name} #{selectedWorker.work_number}</h2>
                 <p style={{ fontSize: '13px', color: '#888' }}>{selectedWorker.email}</p>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

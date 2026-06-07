@@ -239,7 +239,7 @@ export default function Register() {
   return (
     <>
       <Head>
-        <title>Create account — Rannikon Puutarha</title>
+        <title>Create account | Rannikon</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <style>{`
@@ -379,7 +379,7 @@ export default function Register() {
             <div>
               <label className="field-label">Work number<span>*</span></label>
               <input className="gh-input" type="text" name="work_number" placeholder="Work number" value={form.work_number} onChange={handleChange} required />
-              <p className="hint">Your unique farm number — cannot be changed later.</p>
+              <p className="hint">Your unique farm number. Cannot be changed later.</p>
             </div>
 
             <div>

@@ -193,7 +193,7 @@ export default function Dashboard() {
     return (
       <div style={{ marginTop: '12px', borderTop: '1px solid #eee', paddingTop: '12px', overflowX: 'auto' }}>
 
-        <p style={{ fontWeight: '800', fontSize: '13px', marginBottom: '2px' }}>WHITE PAPER — WORK PAID BY THE HOUR</p>
+        <p style={{ fontWeight: '800', fontSize: '13px', marginBottom: '2px' }}>WHITE PAPER: WORK PAID BY THE HOUR</p>
         <p style={{ fontSize: '11px', color: '#555', marginBottom: '6px' }}>8 HOURS PER DAY / 40 HOURS PER WEEK</p>
         <div style={{ overflowX: 'auto', marginBottom: '16px' }}>
           <table style={{ borderCollapse: 'collapse', minWidth: '540px', width: '100%', fontSize: '12px' }}>
@@ -223,7 +223,7 @@ export default function Dashboard() {
         </div>
         <p style={{ fontSize: '11px', color: '#555', marginBottom: '16px', fontStyle: 'italic' }}>When you have worked 4 hours, You need to have an eating break, minimum of 30 mins. START WORK 9:00, 9:15, 9:30 or 9:45.</p>
 
-        <p style={{ fontWeight: '800', fontSize: '13px', marginBottom: '2px', color: '#b45309' }}>ORANGE PAPER — EXTRAWORK PAID BY THE HOUR</p>
+        <p style={{ fontWeight: '800', fontSize: '13px', marginBottom: '2px', color: '#b45309' }}>ORANGE PAPER: EXTRAWORK PAID BY THE HOUR</p>
         <p style={{ fontSize: '11px', color: '#555', marginBottom: '6px' }}>MAXIMUM 3 HOURS PER DAY (MONDAY-FRIDAY) | MAXIMUM 11 HOURS PER DAY (SATURDAY)</p>
         <div style={{ overflowX: 'auto', marginBottom: '16px' }}>
           <table style={{ borderCollapse: 'collapse', minWidth: '540px', width: '100%', fontSize: '12px' }}>
@@ -292,8 +292,8 @@ export default function Dashboard() {
           </table>
         </div>
 
-        <p style={{ fontWeight: '800', fontSize: '13px', marginBottom: '2px', color: '#2d6a2d' }}>GREEN PAPER — TIME USED FOR PICKUP (SALARY PAID BY KILOS)</p>
-        <p style={{ fontSize: '11px', color: '#888', marginBottom: '6px', fontStyle: 'italic' }}>Not in use yet — berry picking season coming soon</p>
+        <p style={{ fontWeight: '800', fontSize: '13px', marginBottom: '2px', color: '#2d6a2d' }}>GREEN PAPER: TIME USED FOR PICKUP (SALARY PAID BY KILOS)</p>
+        <p style={{ fontSize: '11px', color: '#888', marginBottom: '6px', fontStyle: 'italic' }}>Not in use yet. Berry picking season coming soon.</p>
         <div style={{ overflowX: 'auto', marginBottom: '8px' }}>
           <table style={{ borderCollapse: 'collapse', minWidth: '540px', width: '100%', fontSize: '12px' }}>
             <thead>
@@ -723,7 +723,7 @@ export default function Dashboard() {
 
     if (tab === 'green') {
       doc.setTextColor(45, 106, 45)
-      doc.text('TIME USED FOR PICKUP — SALARY PAID BY KILOS', 14, 16)
+      doc.text('TIME USED FOR PICKUP, SALARY PAID BY KILOS', 14, 16)
       doc.setTextColor(0)
       doc.setFontSize(10); doc.setFont('helvetica', 'normal')
       doc.text('Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName, 14, 22)
@@ -796,7 +796,7 @@ export default function Dashboard() {
 
     if (tab === 'green') {
       const data = [
-        ['TIME USED FOR PICKUP — SALARY PAID BY KILOS'],
+        ['TIME USED FOR PICKUP, SALARY PAID BY KILOS'],
         ['Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName],
         [],
         ['Date', 'Start', 'Finish', 'Eating break', 'Extra breaks', 'Hours minus breaks', 'What was picked up'],
@@ -878,7 +878,7 @@ export default function Dashboard() {
                         <span style={{ fontWeight: '800', fontSize: '15px', minWidth: '55px' }}>Day {day}</span>
                         {hasEntry ? (
                           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center', marginTop: '4px' }}>
-                            <span style={{ fontSize: '12px', color: '#555' }}>{entry.actual_start?.slice(0,5)} — {entry.actual_finish?.slice(0,5)}</span>
+                            <span style={{ fontSize: '12px', color: '#555' }}>{entry.actual_start?.slice(0,5)} to {entry.actual_finish?.slice(0,5)}</span>
                             <span style={{ fontSize: '11px', fontWeight: '700', background: '#f0f0f0', color: '#555', padding: '2px 8px', borderRadius: '4px' }}>W: 7:30</span>
                             <span style={{ fontSize: '11px', fontWeight: '700', background: '#fff3e0', color: '#b45309', padding: '2px 8px', borderRadius: '4px' }}>O: {entry.orange_hours}</span>
                             <span style={{ fontSize: '11px', fontWeight: '700', background: '#e3f2fd', color: '#1565c0', padding: '2px 8px', borderRadius: '4px' }}>Total: {entry.total_hours}</span>
