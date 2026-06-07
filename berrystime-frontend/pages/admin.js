@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import api from '../lib/api'
-import { getWorker, isLoggedIn, clearAuth } from '../lib/auth'
+import { getWorker, isLoggedIn, clearAuth, saveAuth } from '../lib/auth'
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
@@ -12,7 +12,7 @@ export default function AdminPanel() {
   const [workers, setWorkers] = useState([])
   const [stats, setStats] = useState(null)
   const [selectedWorker, setSelectedWorker] = useState(null)
-  const [entries, setEntries] = useState([])
+  const [entries, setEntries] = useState({})
   const [month, setMonth] = useState(new Date().getMonth() + 1)
   const [year, setYear] = useState(new Date().getFullYear())
   const [loading, setLoading] = useState(true)
@@ -28,28 +28,29 @@ export default function AdminPanel() {
         if (w?.role !== 'admin') { router.push('/dashboard'); return }
         setWorker(w)
         saveAuth(localStorage.getItem('rannikon_token'), w)
-        setLoading(true)
         Promise.all([api.get('/api/admin/workers'), api.get('/api/admin/stats')])
           .then(([workersRes, statsRes]) => {
             setWorkers(workersRes.data.workers)
             setStats(statsRes.data)
           })
-          .catch(err => { if (err.response?.status === 403) router.push('/dashboard') })
+          .catch(err => {
+            if (err.response?.status === 403) router.push('/dashboard')
+          })
           .finally(() => setLoading(false))
       })
       .catch(err => {
         if (err.response?.status === 401) { router.push('/login'); return }
-        // API unreachable or server error — fall back to localStorage role check
         const w = getWorker()
         if (!w || w.role !== 'admin') { router.push('/dashboard'); return }
         setWorker(w)
-        setLoading(true)
         Promise.all([api.get('/api/admin/workers'), api.get('/api/admin/stats')])
           .then(([workersRes, statsRes]) => {
             setWorkers(workersRes.data.workers)
             setStats(statsRes.data)
           })
-          .catch(e => { if (e.response?.status === 403) router.push('/dashboard') })
+          .catch(e => {
+            if (e.response?.status === 403) router.push('/dashboard')
+          })
           .finally(() => setLoading(false))
       })
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,20 +69,6 @@ export default function AdminPanel() {
       })
       .catch(() => console.error('Failed to load entries'))
   }, [month, year, selectedWorker])
-
-  async function loadEntries(workerId) {
-    try {
-      const res = await api.get(`/api/admin/workers/${workerId}/timesheet/${month}/${year}`)
-      const map = {}
-      res.data.entries.forEach(e => {
-        const day = parseInt(e.entry_date.split('T')[0].split('-')[2])
-        map[day] = e
-      })
-      setEntries(map)
-    } catch (err) {
-      console.error('Failed to load entries')
-    }
-  }
 
   async function toggleActive(w) {
     setUpdating(w.id)
@@ -106,6 +93,7 @@ export default function AdminPanel() {
 
   function openWorkerTimesheet(w) {
     setSelectedWorker(w)
+    setEntries({})
     setView('timesheet')
   }
 
@@ -125,52 +113,54 @@ export default function AdminPanel() {
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'DM Sans, sans-serif' }}>
-        <p style={{ color: '#555' }}>Loading admin panel...</p>
+        <p style={{ color: '#555', fontSize: '15px' }}>Loading admin panel...</p>
       </div>
     )
   }
 
   return (
     <>
-      <Head><title>Admin — Rannikon Puutarha</title><meta name="viewport" content="width=device-width, initial-scale=1" /></Head>
+      <Head>
+        <title>Admin — Rannikon Puutarha</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
+      </Head>
       <style>{`
-        *{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:'DM Sans',sans-serif;background:#f5f5f0;color:#1a1a18;-webkit-font-smoothing:antialiased}
-        .btn{padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all 0.15s}
-        .btn-green{background:#2d6a2d;color:#fff}
-        .btn-green:hover{background:#235223}
-        .btn-outline{background:#fff;color:#333;border:1px solid #ddd}
-        .btn-outline:hover{background:#f5f5f0}
-        .btn-red{background:#fdecea;color:#c0392b;border:1px solid #ffc1c0}
-        .btn-red:hover{background:#fbd0cd}
-        .btn-orange{background:#fff3e0;color:#b45309;border:1px solid #fde0b0}
-        .stat-card{background:#fff;border:1px solid #e8e8e3;borderRadius:12px;padding:20px 24px}
-        .worker-row:hover{background:#f9f9f6}
-        .worker-row{transition:background 0.15s;cursor:pointer}
-        input:focus{outline:none;border-color:#2d6a2d!important;box-shadow:0 0 0 3px rgba(45,106,45,0.1)}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'DM Sans', sans-serif; background: #f5f5f0; color: #1a1a18; -webkit-font-smoothing: antialiased; }
+        .btn { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: all 0.15s; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-green { background: #2d6a2d; color: #fff; }
+        .btn-green:hover:not(:disabled) { background: #235223; }
+        .btn-outline { background: #fff; color: #333; border: 1px solid #ddd !important; }
+        .btn-outline:hover:not(:disabled) { background: #f5f5f0; }
+        .worker-row:hover { background: #f9f9f6 !important; }
+        .worker-row { transition: background 0.15s; }
+        input:focus { outline: none; border-color: #2d6a2d !important; box-shadow: 0 0 0 3px rgba(45,106,45,0.1); }
       `}</style>
 
       {/* NAV */}
       <div style={{ background: '#2d6a2d', padding: '10px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <img src="/rannikkopuutarhalogo.png" alt="" style={{ height: '36px', borderRadius: '6px' }} />
-          <div>
+          <img src="/rannikkopuutarhalogo.png" alt="Rannikon" style={{ height: '34px', borderRadius: '6px' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontFamily: 'Dancing Script, cursive', fontWeight: '700', fontSize: '18px', color: '#fff' }}>Rannikon Puutarha</span>
-            <span style={{ marginLeft: '10px', background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: '11px', fontWeight: '700', padding: '2px 8px', borderRadius: '4px' }}>ADMIN</span>
+            <span style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: '11px', fontWeight: '700', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.5px' }}>ADMIN</span>
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)' }}>#{worker?.work_number} {worker?.full_name}</span>
-          <button className="btn btn-outline" onClick={() => router.push('/dashboard')} style={{ fontSize: '12px' }}>My timesheet</button>
-          <button className="btn btn-outline" onClick={() => { clearAuth(); router.push('/login') }} style={{ fontSize: '12px' }}>Sign out</button>
+          <button className="btn btn-outline" onClick={() => router.push('/dashboard')} style={{ fontSize: '12px', color: '#fff', borderColor: 'rgba(255,255,255,0.4) !important', background: 'rgba(255,255,255,0.1)' }}>My timesheet</button>
+          <button className="btn btn-outline" onClick={() => { clearAuth(); router.push('/login') }} style={{ fontSize: '12px', color: '#fff', borderColor: 'rgba(255,255,255,0.4) !important', background: 'rgba(255,255,255,0.1)' }}>Sign out</button>
         </div>
       </div>
 
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '24px 16px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 16px' }}>
 
         {/* Stats */}
         {stats && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px', marginBottom: '24px' }}>
             {[
               { label: 'Total workers', value: stats.total_workers, color: '#2d6a2d' },
               { label: 'Active workers', value: activeCount, color: '#2d6a2d' },
@@ -179,8 +169,8 @@ export default function AdminPanel() {
               { label: 'Total entries', value: stats.total_entries, color: '#555' },
             ].map(s => (
               <div key={s.label} style={{ background: '#fff', border: '1px solid #e8e8e3', borderRadius: '12px', padding: '16px 20px' }}>
-                <div style={{ fontSize: '11px', color: '#888', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '6px' }}>{s.label}</div>
-                <div style={{ fontSize: '28px', fontWeight: '800', color: s.color }}>{s.value}</div>
+                <div style={{ fontSize: '11px', color: '#888', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '8px' }}>{s.label}</div>
+                <div style={{ fontSize: '30px', fontWeight: '800', color: s.color, lineHeight: 1 }}>{s.value}</div>
               </div>
             ))}
           </div>
@@ -200,6 +190,7 @@ export default function AdminPanel() {
           )}
         </div>
 
+        {/* Workers table */}
         {view === 'workers' && (
           <div style={{ background: '#fff', border: '1px solid #e8e8e3', borderRadius: '12px', overflow: 'hidden' }}>
             <div style={{ padding: '16px 20px', borderBottom: '1px solid #e8e8e3', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
@@ -209,23 +200,23 @@ export default function AdminPanel() {
                 placeholder="Search by name, number or email..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                style={{ padding: '8px 12px', fontSize: '14px', border: '1px solid #ddd', borderRadius: '8px', width: '280px', fontFamily: 'inherit' }}
+                style={{ padding: '8px 12px', fontSize: '14px', border: '1px solid #ddd', borderRadius: '8px', width: '300px', fontFamily: 'inherit' }}
               />
             </div>
 
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', minWidth: '700px' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', minWidth: '750px' }}>
                 <thead>
                   <tr style={{ background: '#f9f9f6', borderBottom: '1px solid #e8e8e3' }}>
                     {['#', 'Work No.', 'Full Name', 'Email', 'Role', 'Status', 'Joined', 'Actions'].map(h => (
-                      <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '700', fontSize: '12px', color: '#555', textTransform: 'uppercase', letterSpacing: '0.4px' }}>{h}</th>
+                      <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '700', fontSize: '11px', color: '#888', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map((w, i) => (
-                    <tr key={w.id} className="worker-row" style={{ borderBottom: '1px solid #f0f0ec' }}>
-                      <td style={{ padding: '12px 14px', color: '#aaa', fontSize: '12px' }}>{i + 1}</td>
+                    <tr key={w.id} className="worker-row" style={{ borderBottom: '1px solid #f0f0ec', background: '#fff' }}>
+                      <td style={{ padding: '12px 14px', color: '#bbb', fontSize: '12px' }}>{i + 1}</td>
                       <td style={{ padding: '12px 14px', fontWeight: '700', color: '#2d6a2d' }}>#{w.work_number}</td>
                       <td style={{ padding: '12px 14px', fontWeight: '600' }}>{w.full_name}</td>
                       <td style={{ padding: '12px 14px', color: '#666' }}>{w.email}</td>
@@ -267,14 +258,15 @@ export default function AdminPanel() {
                 </tbody>
               </table>
               {filtered.length === 0 && (
-                <div style={{ padding: '40px', textAlign: 'center', color: '#aaa', fontSize: '14px' }}>
-                  No workers found matching your search.
+                <div style={{ padding: '48px', textAlign: 'center', color: '#aaa', fontSize: '14px' }}>
+                  No workers found.
                 </div>
               )}
             </div>
           </div>
         )}
 
+        {/* Worker timesheet view */}
         {view === 'timesheet' && selectedWorker && (
           <div>
             <div style={{ background: '#fff', border: '1px solid #e8e8e3', borderRadius: '12px', padding: '16px 20px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
@@ -283,21 +275,25 @@ export default function AdminPanel() {
                 <p style={{ fontSize: '13px', color: '#888' }}>{selectedWorker.email}</p>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <button onClick={() => { if (month === 1) { setMonth(12); setYear(y => y-1) } else setMonth(m => m-1) }}
-                  style={{ padding: '6px 12px', border: '1px solid #ddd', borderRadius: '6px', background: '#fff', cursor: 'pointer' }}>{'<'}</button>
-                <span style={{ fontWeight: '700', minWidth: '140px', textAlign: 'center' }}>{MONTHS[month-1]} {year}</span>
-                <button onClick={() => { if (month === 12) { setMonth(1); setYear(y => y+1) } else setMonth(m => m+1) }}
-                  style={{ padding: '6px 12px', border: '1px solid #ddd', borderRadius: '6px', background: '#fff', cursor: 'pointer' }}>{'>'}</button>
+                <button onClick={() => { if (month === 1) { setMonth(12); setYear(y => y - 1) } else setMonth(m => m - 1) }}
+                  style={{ padding: '6px 12px', border: '1px solid #ddd', borderRadius: '6px', background: '#fff', cursor: 'pointer', fontSize: '14px' }}>
+                  {'<'}
+                </button>
+                <span style={{ fontWeight: '700', minWidth: '150px', textAlign: 'center', fontSize: '15px' }}>{MONTHS[month - 1]} {year}</span>
+                <button onClick={() => { if (month === 12) { setMonth(1); setYear(y => y + 1) } else setMonth(m => m + 1) }}
+                  style={{ padding: '6px 12px', border: '1px solid #ddd', borderRadius: '6px', background: '#fff', cursor: 'pointer', fontSize: '14px' }}>
+                  {'>'}
+                </button>
               </div>
             </div>
 
             <div style={{ background: '#fff', border: '1px solid #e8e8e3', borderRadius: '12px', overflow: 'hidden' }}>
               <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', minWidth: '700px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', minWidth: '750px' }}>
                   <thead>
                     <tr style={{ background: '#f9f9f6', borderBottom: '1px solid #e8e8e3' }}>
-                      {['Day', 'Start', 'Finish', 'White hrs', 'Orange start', 'Orange finish', 'Orange hrs', 'Total', 'What work'].map(h => (
-                        <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '700', fontSize: '12px', color: '#555', textTransform: 'uppercase', letterSpacing: '0.4px' }}>{h}</th>
+                      {['Day', 'Start', 'Finish', 'Break', 'White hrs', 'Orange start', 'Orange finish', 'Orange hrs', 'Total', 'What work'].map(h => (
+                        <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontWeight: '700', fontSize: '11px', color: '#888', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -307,13 +303,14 @@ export default function AdminPanel() {
                       return (
                         <tr key={day} style={{ borderBottom: '1px solid #f0f0ec', background: entry ? '#fafffe' : '#fff' }}>
                           <td style={{ padding: '10px 14px', fontWeight: '700', color: entry ? '#2d6a2d' : '#ccc' }}>Day {day}</td>
-                          <td style={{ padding: '10px 14px' }}>{entry ? entry.actual_start?.slice(0,5) : '—'}</td>
-                          <td style={{ padding: '10px 14px' }}>{entry ? entry.actual_finish?.slice(0,5) : '—'}</td>
-                          <td style={{ padding: '10px 14px', fontWeight: entry ? '700' : '400', color: '#2d6a2d' }}>{entry ? '7:30' : '—'}</td>
-                          <td style={{ padding: '10px 14px' }}>{entry ? entry.orange_start?.slice(0,5) : '—'}</td>
-                          <td style={{ padding: '10px 14px' }}>{entry ? entry.orange_finish?.slice(0,5) : '—'}</td>
-                          <td style={{ padding: '10px 14px', fontWeight: entry ? '700' : '400', color: '#b45309' }}>{entry ? entry.orange_hours : '—'}</td>
-                          <td style={{ padding: '10px 14px', fontWeight: entry ? '700' : '400', color: '#1565c0' }}>{entry ? entry.total_hours : '—'}</td>
+                          <td style={{ padding: '10px 14px', fontWeight: entry ? '600' : '400' }}>{entry ? entry.actual_start?.slice(0, 5) : '—'}</td>
+                          <td style={{ padding: '10px 14px', fontWeight: entry ? '600' : '400' }}>{entry ? entry.actual_finish?.slice(0, 5) : '—'}</td>
+                          <td style={{ padding: '10px 14px', color: '#888' }}>{entry ? (entry.break_mins || 30) + ' min' : '—'}</td>
+                          <td style={{ padding: '10px 14px', fontWeight: '700', color: entry ? '#2d6a2d' : '#ccc' }}>{entry ? (entry.white_hours || '7:30') : '—'}</td>
+                          <td style={{ padding: '10px 14px' }}>{entry ? entry.orange_start?.slice(0, 5) : '—'}</td>
+                          <td style={{ padding: '10px 14px' }}>{entry ? entry.orange_finish?.slice(0, 5) : '—'}</td>
+                          <td style={{ padding: '10px 14px', fontWeight: '700', color: entry ? '#b45309' : '#ccc' }}>{entry ? entry.orange_hours : '—'}</td>
+                          <td style={{ padding: '10px 14px', fontWeight: '700', color: entry ? '#1565c0' : '#ccc' }}>{entry ? entry.total_hours : '—'}</td>
                           <td style={{ padding: '10px 14px', color: '#666' }}>{entry ? entry.what_work : ''}</td>
                         </tr>
                       )
@@ -322,26 +319,30 @@ export default function AdminPanel() {
                 </table>
               </div>
 
-              <div style={{ padding: '14px 20px', borderTop: '1px solid #e8e8e3', background: '#f9f9f6', display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+              {/* Monthly totals footer */}
+              <div style={{ padding: '14px 20px', borderTop: '1px solid #e8e8e3', background: '#f9f9f6', display: 'flex', gap: '28px', flexWrap: 'wrap', alignItems: 'center' }}>
                 {(() => {
                   const filled = Object.values(entries)
+                  const toMins = t => { const p = t.split(':'); return parseInt(p[0]) * 60 + parseInt(p[1]) }
+                  const toHHMM = m => m > 0 ? Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0') : '0:00'
+                  const totalWhiteMins = filled.reduce((sum, e) => {
+                    if (!e.white_hours) return sum + 450
+                    return sum + toMins(e.white_hours)
+                  }, 0)
+                  const totalExtraMins = filled.reduce((sum, e) => {
+                    if (!e.orange_hours) return sum
+                    return sum + toMins(e.orange_hours)
+                  }, 0)
                   const totalMins = filled.reduce((sum, e) => {
                     if (!e.total_hours) return sum
-                    const p = e.total_hours.split(':')
-                    return sum + parseInt(p[0]) * 60 + parseInt(p[1])
+                    return sum + toMins(e.total_hours)
                   }, 0)
-                  const extraMins = filled.reduce((sum, e) => {
-                    if (!e.orange_hours) return sum
-                    const p = e.orange_hours.split(':')
-                    return sum + parseInt(p[0]) * 60 + parseInt(p[1])
-                  }, 0)
-                  const toHHMM = m => Math.floor(m/60) + ':' + String(m%60).padStart(2,'0')
                   return (
                     <>
-                      <div><span style={{ fontSize: '12px', color: '#888' }}>Days worked: </span><span style={{ fontWeight: '700' }}>{filled.length}</span></div>
-                      <div><span style={{ fontSize: '12px', color: '#888' }}>White hours: </span><span style={{ fontWeight: '700', color: '#2d6a2d' }}>{toHHMM(filled.length * 450)}</span></div>
-                      <div><span style={{ fontSize: '12px', color: '#888' }}>Extra hours: </span><span style={{ fontWeight: '700', color: '#b45309' }}>{toHHMM(extraMins)}</span></div>
-                      <div><span style={{ fontSize: '12px', color: '#888' }}>Total hours: </span><span style={{ fontWeight: '700', color: '#1565c0', fontSize: '15px' }}>{toHHMM(totalMins)}</span></div>
+                      <div><span style={{ fontSize: '12px', color: '#888', fontWeight: '600' }}>Days worked: </span><span style={{ fontWeight: '800', fontSize: '15px' }}>{filled.length}</span></div>
+                      <div><span style={{ fontSize: '12px', color: '#888', fontWeight: '600' }}>White hours: </span><span style={{ fontWeight: '800', fontSize: '15px', color: '#2d6a2d' }}>{toHHMM(totalWhiteMins)}</span></div>
+                      <div><span style={{ fontSize: '12px', color: '#888', fontWeight: '600' }}>Extra hours: </span><span style={{ fontWeight: '800', fontSize: '15px', color: '#b45309' }}>{toHHMM(totalExtraMins)}</span></div>
+                      <div><span style={{ fontSize: '12px', color: '#888', fontWeight: '600' }}>Total hours: </span><span style={{ fontWeight: '800', fontSize: '17px', color: '#1565c0' }}>{toHHMM(totalMins)}</span></div>
                     </>
                   )
                 })()}
