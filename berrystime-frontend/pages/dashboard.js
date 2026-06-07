@@ -813,7 +813,7 @@ export default function Dashboard() {
       <div style={{ background: '#f5f5f5', minHeight: '100vh' }}>
 
         <div style={{ background: '#fff', borderBottom: '1px solid #ddd', padding: '6px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div onClick={() => window.location.reload()} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
             <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '46px', width: 'auto', display: 'block' }} />
             <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '22px', color: '#2d6a2d', lineHeight: 1 }}>Rannikon Puutarha</span>
           </div>
