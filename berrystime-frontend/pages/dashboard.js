@@ -231,7 +231,6 @@ export default function Dashboard() {
                 <th style={thW()}>Start</th>
                 <th style={thW()}>Finish</th>
                 <th style={thW()}>Must have Eating break</th>
-                <th style={thW()}>Extra Breaks</th>
                 <th style={thW()}>Hours minus breaks</th>
                 <th style={thW()}>What work</th>
               </tr>
@@ -242,7 +241,6 @@ export default function Dashboard() {
                 <td style={tdW()}>{entry.white_start?.slice(0,5)}</td>
                 <td style={tdW()}>{entry.white_finish?.slice(0,5)}</td>
                 <td style={tdW({ textAlign: 'center' })}>30 min</td>
-                <td style={tdW()}></td>
                 <td style={tdW({ fontWeight: '700', color: '#2d6a2d' })}>{entry.white_hours}</td>
                 <td style={tdW()}>{entry.what_work}</td>
               </tr>
@@ -398,7 +396,6 @@ export default function Dashboard() {
                       <th style={thW()}>Start</th>
                       <th style={thW()}>Finish</th>
                       <th style={thW()}>Must have Eating break</th>
-                      <th style={thW()}>Extra Breaks</th>
                       <th style={thW()}>Hours minus breaks</th>
                       <th style={thW()}>What work</th>
                     </tr>
@@ -412,7 +409,6 @@ export default function Dashboard() {
                           <td style={tdW()}>{entry ? <EditableCell value={entry.white_start?.slice(0,5)} field="white_start" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                           <td style={tdW()}>{entry ? <EditableCell value={entry.white_finish?.slice(0,5)} field="white_finish" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                           <td style={tdW({ textAlign: 'center' })}>30 min</td>
-                          <td style={tdW()}></td>
                           <td style={tdW({ fontWeight: '700', color: entry ? '#2d6a2d' : '' })}>{entry ? <EditableCell value={entry.white_hours || '8:00'} field="white_hours" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                           <td style={tdW()}>{entry ? <EditableCell value={entry.what_work} field="what_work" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                         </tr>
@@ -463,7 +459,7 @@ export default function Dashboard() {
                           <td style={tdO()}><b>{day}</b></td>
                           <td style={tdO()}>{entry ? <EditableCell value={entry.orange_start?.slice(0,5)} field="orange_start" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                           <td style={tdO()}>{entry ? <EditableCell value={entry.orange_finish?.slice(0,5)} field="orange_finish" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
-                          <td style={tdO({ textAlign: 'center' })}>{entry ? '0:15' : ''}</td>
+                          <td style={tdO({ textAlign: 'center' })}>{entry ? (entry.orange_break || '0:00') : ''}</td>
                           <td style={tdO({ fontWeight: '700', color: entry ? '#b45309' : '' })}>{entry ? <EditableCell value={entry.orange_hours} field="orange_hours" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                           <td style={tdO()}>{entry ? <EditableCell value={entry.what_work} field="what_work" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                           <td style={tdO()}></td>
@@ -501,7 +497,7 @@ export default function Dashboard() {
                   return { d, exists: d <= days, dow, name: dow !== null ? DAY_NAMES[dow] : '', isSun: dow === 0, isSat: dow === 6 }
                 })
                 const validDays = dayInfos.filter(x => x.exists)
-                const totalWorking = validDays.filter(x => entries[x.d] && !x.isSun).length * 450
+                const totalWorking = validDays.reduce((sum, x) => { if (!entries[x.d] || x.isSun) return sum; const p = entries[x.d].white_hours?.split(':') || ['8','0']; return sum + parseInt(p[0])*60 + parseInt(p[1]) }, 0)
                 const totalExtra = validDays.reduce((sum, x) => {
                   if (!entries[x.d]?.orange_hours || x.isSun) return sum
                   const p = entries[x.d].orange_hours.split(':')
@@ -674,10 +670,10 @@ export default function Dashboard() {
       doc.setFontSize(10); doc.setFont('helvetica', 'normal')
       doc.text('8 HOURS PER DAY / 40 HOURS PER WEEK', 14, 22)
       doc.text('Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName, 14, 28)
-      const rows = Array.from({ length: daysCount }, (_, i) => { const d = i+1; const e = entries[d]; return [d, e ? e.white_start?.slice(0,5) : '', e ? e.white_finish?.slice(0,5) : '', '30 min', e ? (e.orange_break || '0:00') : '', e ? (e.white_hours || '8:00') : '', e ? e.what_work : ''] })
+      const rows = Array.from({ length: daysCount }, (_, i) => { const d = i+1; const e = entries[d]; return [d, e ? e.white_start?.slice(0,5) : '', e ? e.white_finish?.slice(0,5) : '', '30 min', e ? (e.white_hours || '8:00') : '', e ? e.what_work : ''] })
       autoTable(doc, {
         startY: 32,
-        head: [['Date','Start','Finish','Eating break','Extra breaks','Hours minus breaks','What work']],
+        head: [['Date','Start','Finish','Eating break','Hours minus breaks','What work']],
         body: rows,
         styles: { fontSize: 9, lineColor: [51,51,51], lineWidth: 0.3 },
         headStyles: { fillColor: [224,224,224], textColor: 0, fontStyle: 'bold' },
@@ -780,8 +776,8 @@ export default function Dashboard() {
         ['8 HOURS PER DAY / 40 HOURS PER WEEK'],
         ['Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName],
         [],
-        ['Date', 'Start', 'Finish', 'Eating break', 'Extra breaks', 'Hours minus breaks', 'What work'],
-        ...Array.from({ length: daysCount }, (_, i) => { const d = i+1; const e = entries[d]; return [d, e ? e.white_start?.slice(0,5) : '', e ? e.white_finish?.slice(0,5) : '', '30 min', e ? (e.orange_break || '0:00') : '', e ? (e.white_hours || '8:00') : '', e ? e.what_work : ''] })
+        ['Date', 'Start', 'Finish', 'Eating break', 'Hours minus breaks', 'What work'],
+        ...Array.from({ length: daysCount }, (_, i) => { const d = i+1; const e = entries[d]; return [d, e ? e.white_start?.slice(0,5) : '', e ? e.white_finish?.slice(0,5) : '', '30 min', e ? (e.white_hours || '8:00') : '', e ? e.what_work : ''] })
       ]
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), 'White Paper')
       XLSX.writeFile(wb, 'white-paper-' + monthName + '-' + (worker?.work_number || '') + '.xlsx')
