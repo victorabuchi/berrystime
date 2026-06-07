@@ -141,18 +141,16 @@ export default function AdminPanel() {
       `}</style>
 
       {/* NAV */}
-      <div style={{ background: '#2d6a2d', padding: '10px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <img src="/rannikkopuutarhalogo.png" alt="Rannikon" style={{ height: '34px', borderRadius: '6px' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontFamily: 'Dancing Script, cursive', fontWeight: '700', fontSize: '18px', color: '#fff' }}>Rannikon Puutarha</span>
-            <span style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', fontSize: '11px', fontWeight: '700', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.5px' }}>ADMIN</span>
-          </div>
+      <div style={{ background: '#fff', borderBottom: '1px solid #ddd', padding: '6px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <img src="/rannikkopuutarhalogo.png" alt="Rannikon" style={{ height: '46px', width: 'auto', display: 'block' }} />
+          <span style={{ fontFamily: 'Dancing Script, cursive', fontWeight: '700', fontSize: '22px', color: '#2d6a2d', lineHeight: 1 }}>Rannikon Puutarha</span>
+          <span style={{ background: '#2d6a2d', color: '#fff', fontSize: '10px', fontWeight: '700', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.5px' }}>ADMIN</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)' }}>#{worker?.work_number} {worker?.full_name}</span>
-          <button className="btn btn-outline" onClick={() => router.push('/dashboard')} style={{ fontSize: '12px', color: '#fff', borderColor: 'rgba(255,255,255,0.4) !important', background: 'rgba(255,255,255,0.1)' }}>My timesheet</button>
-          <button className="btn btn-outline" onClick={() => { clearAuth(); router.push('/login') }} style={{ fontSize: '12px', color: '#fff', borderColor: 'rgba(255,255,255,0.4) !important', background: 'rgba(255,255,255,0.1)' }}>Sign out</button>
+          <span style={{ fontSize: '13px', color: '#444', fontWeight: '500' }}>#{worker?.work_number} {worker?.full_name}</span>
+          <button className="btn btn-green" onClick={() => router.push('/dashboard')} style={{ fontSize: '12px' }}>My timesheet</button>
+          <button className="btn btn-green" onClick={() => { clearAuth(); router.push('/login') }} style={{ fontSize: '12px' }}>Sign out</button>
         </div>
       </div>
 
