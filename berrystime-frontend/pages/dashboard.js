@@ -66,7 +66,7 @@ export default function Dashboard() {
   const [year, setYear] = useState(new Date().getFullYear())
   const [editDay, setEditDay] = useState(null)
   const [viewDay, setViewDay] = useState(null)
-  const [form, setForm] = useState({ start: '', finish: '', work: '' })
+  const [form, setForm] = useState({ start: '', finish: '', work: '', break_mins: 30 })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [activeTab, setActiveTab] = useState('white')
@@ -113,7 +113,8 @@ export default function Dashboard() {
     setForm({
       start: e ? e.actual_start?.slice(0,5) || '' : '',
       finish: e ? e.actual_finish?.slice(0,5) || '' : '',
-      work: e ? e.what_work || '' : ''
+      work: e ? e.what_work || '' : '',
+      break_mins: e ? (e.break_mins || 30) : 30
     })
     setEditDay(day)
     setViewDay(null)
@@ -158,7 +159,8 @@ export default function Dashboard() {
         entry_date: dateStr,
         actual_start: form.start,
         actual_finish: form.finish,
-        what_work: form.work
+        what_work: form.work,
+        break_mins: parseInt(form.break_mins) || 30
       })
       await loadEntries()
       setEditDay(null)
@@ -935,6 +937,11 @@ export default function Dashboard() {
                           <div style={{ flex: 1, minWidth: '130px' }}>
                             <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px' }}>Actual finish time</label>
                             <input style={inp} placeholder="HH:MM e.g. 20:45" value={form.finish} onChange={e => setForm({...form, finish: e.target.value})} />
+                          </div>
+                          <div style={{ flex: 1, minWidth: '130px' }}>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px' }}>Total break (minutes)</label>
+                            <input style={inp} type="number" min="30" placeholder="30" value={form.break_mins} onChange={e => setForm({...form, break_mins: e.target.value})} />
+                            <p style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>Min 30 min eating break</p>
                           </div>
                           <div style={{ flex: 2, minWidth: '180px' }}>
                             <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px' }}>What work</label>

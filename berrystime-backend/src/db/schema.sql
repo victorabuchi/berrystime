@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS workers (
 -- Add role column to existing databases that predate the column
 ALTER TABLE workers ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'worker';
 
+-- Add break_mins to existing timesheet_entries tables
+ALTER TABLE timesheet_entries ADD COLUMN IF NOT EXISTS break_mins INTEGER DEFAULT 30;
+
 CREATE TABLE IF NOT EXISTS timesheet_entries (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   worker_id UUID REFERENCES workers(id) ON DELETE CASCADE,
