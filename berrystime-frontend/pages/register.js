@@ -208,9 +208,14 @@ export default function Register() {
   const [emailPref, setEmailPref] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showFeatures, setShowFeatures] = useState(false)
-  const [cookieBanner, setCookieBanner] = useState(true)
+  const [cookieBanner, setCookieBanner] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => setCookieBanner(true), 3000)
+    return () => clearTimeout(t)
+  }, [])
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -262,9 +267,10 @@ export default function Register() {
         .features-toggle:hover{color:#fff}
         .field-label{display:block;font-size:14px;font-weight:600;margin-bottom:4px;color:#1a1a18}
         .field-label span{color:#cf2030;margin-left:1px}
-        .cookie-banner{position:fixed;bottom:0;left:0;right:0;background:#1a2e1a;border-top:1px solid rgba(255,255,255,0.1);padding:12px 20px;font-size:12px;color:rgba(255,255,255,0.65);z-index:1000}
-        .cookie-banner a{color:#4ade80}
-        .cookie-banner a:hover{text-decoration:underline}
+        .cookie-popup{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid #e0e0dc;border-radius:14px;padding:18px 22px;font-size:13px;color:#444;z-index:1000;box-shadow:0 8px 32px rgba(0,0,0,0.14);width:calc(100% - 32px);max-width:460px;animation:popupSlide 0.3s ease}
+        .cookie-popup a{color:#2d6a2d;text-decoration:none}
+        .cookie-popup a:hover{text-decoration:underline}
+        @keyframes popupSlide{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
         .reg-mobile-top{display:none}
         @media(max-width:768px){
           .reg-left{display:none!important}
@@ -334,7 +340,7 @@ export default function Register() {
             <h1 style={{ fontSize: '24px', fontWeight: '300', letterSpacing: '-0.3px', color: '#1a1a18' }}>Create your account</h1>
           </div>
 
-          <p style={{ textAlign: 'right', fontSize: '13px', color: '#666', marginBottom: '20px' }}>
+          <p style={{ textAlign: 'center', fontSize: '13px', color: '#666', marginBottom: '20px' }}>
             Already have an account?{' '}
             <a href="/login" style={{ color: '#2d6a2d', fontWeight: '600' }}
               onMouseEnter={e => e.target.style.textDecoration = 'underline'}
@@ -413,20 +419,18 @@ export default function Register() {
         </div>
       </div>
 
-      {/* Cookie banner */}
+      {/* Cookie popup */}
       {cookieBanner && (
-        <div className="cookie-banner">
-          <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-            <span>
-              We use cookies to improve your experience.{' '}
-              <a href="#">Manage preferences</a>{' · '}
-              <a href="#">Privacy Statement</a>{' · '}
-              <a href="#">Third-Party Cookies</a>
-            </span>
-            <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
-              <button onClick={() => setCookieBanner(false)} style={{ padding: '4px 14px', background: '#2d6a2d', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Accept</button>
-              <button onClick={() => setCookieBanner(false)} style={{ padding: '4px 14px', background: 'transparent', color: 'rgba(255,255,255,0.65)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>Reject</button>
-            </div>
+        <div className="cookie-popup">
+          <p style={{ marginBottom: '10px', lineHeight: '1.6' }}>
+            We use cookies to improve your experience.{' '}
+            <a href="#">Manage preferences</a>{' · '}
+            <a href="#">Privacy Statement</a>{' · '}
+            <a href="#">Third-Party Cookies</a>
+          </p>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button onClick={() => setCookieBanner(false)} style={{ flex: 1, padding: '8px', background: '#2d6a2d', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>Accept</button>
+            <button onClick={() => setCookieBanner(false)} style={{ flex: 1, padding: '8px', background: '#fff', color: '#555', border: '1px solid #ddd', borderRadius: '8px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>Reject</button>
           </div>
         </div>
       )}

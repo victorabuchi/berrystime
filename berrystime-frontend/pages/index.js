@@ -317,7 +317,7 @@ export default function Home() {
           .hero-grid{flex-direction:column!important}
           .features-grid{flex-direction:column!important}
           .nav-links{display:none!important}
-          .hero-visual{display:none!important}
+          .hero-visual{display:flex!important;justify-content:center;margin-top:36px}
           .footer-cols{flex-direction:column!important;gap:32px!important}
         }
       `}</style>
