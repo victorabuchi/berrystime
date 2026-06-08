@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(fuser -k 4004/tcp)",
+      "Bash(kill 356685)",
+      "Bash(npm run *)",
+      "Bash(python3 -c ' *)",
+      "Bash(python3)",
+      "Bash(curl -s -X POST http://localhost:4003/api/auth/login -H 'Content-Type: application/json' -d '{\"work_number\":\"334\",\"password\":\"Qwerasdf1234@#!?\"}')",
+      "Bash(python3 -m json.tool)",
+      "Bash(node -e ' *)"
+    ]
+  }
+}
