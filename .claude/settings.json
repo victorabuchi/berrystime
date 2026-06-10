@@ -8,7 +8,10 @@
       "Bash(python3)",
       "Bash(curl -s -X POST http://localhost:4003/api/auth/login -H 'Content-Type: application/json' -d '{\"work_number\":\"334\",\"password\":\"Qwerasdf1234@#!?\"}')",
       "Bash(python3 -m json.tool)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:4004/supervisor)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:4003/api/health)",
+      "Read(//home/victor/.claude/projects/-home-victor-berrystime/**)"
     ]
   }
 }
