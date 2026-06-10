@@ -1,6 +1,8 @@
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 export default function Privacy() {
+  const router = useRouter()
   return (
     <>
       <Head>
@@ -11,7 +13,7 @@ export default function Privacy() {
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'DM Sans', sans-serif; background: #fff; color: #1a1a18; -webkit-font-smoothing: antialiased; }
-        .container { max-width: 720px; margin: 0 auto; padding: 48px 24px; }
+        .container { max-width: 720px; margin: 0 auto; padding: 0 24px 48px; }
         h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; color: #1a1a18; }
         h2 { font-size: 17px; font-weight: 700; margin: 32px 0 10px; color: #1a1a18; }
         p { font-size: 15px; line-height: 1.7; color: #444; margin-bottom: 12px; }
@@ -19,16 +21,11 @@ export default function Privacy() {
         li { font-size: 15px; line-height: 1.7; color: #444; margin-bottom: 4px; }
         a { color: #2d6a2d; }
         .meta { font-size: 13px; color: #888; margin-bottom: 40px; }
-        .nav { background: #fff; border-bottom: 1px solid #eee; padding: 12px 24px; display: flex; align-items: center; gap: 10px; }
-        .nav img { height: 36px; }
-        .nav-brand { font-family: 'Dancing Script', cursive; font-size: 18px; font-weight: 700; color: #2d6a2d; }
       `}</style>
 
-      <div className="nav">
-        <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-          <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" />
-          <span className="nav-brand">Rannikon Puutarha</span>
-        </a>
+      <div onClick={() => router.push('/')} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '40px', marginBottom: '16px', cursor: 'pointer' }}>
+        <img src="/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" style={{ height: '48px', width: 'auto', marginBottom: '14px' }} />
+        <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '22px', color: '#2d6a2d' }}>Rannikon Puutarha</span>
       </div>
 
       <div className="container">
