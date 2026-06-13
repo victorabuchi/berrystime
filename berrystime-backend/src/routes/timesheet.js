@@ -18,42 +18,42 @@ function addMins(t, add) {
 }
 
 function calculate(actualStart, actualFinish, breakMins) {
-  const totalBreak = Math.max(30, breakMins || 30)
-  const extraBreak = totalBreak - 30
+  const totalBreak = Math.max(0, breakMins || 0)
+  const extraBreak = Math.max(0, totalBreak - 30)
 
-  // White window = 8h work + 30min eating break = 510 mins from actual start
-  const WHITE_WINDOW = 510
   const workedMins = toMins(actualFinish) - toMins(actualStart)
-  const hasFullWhite = workedMins >= WHITE_WINDOW
+  const WHITE_WINDOW = 480 + (totalBreak >= 30 ? 30 : 0) + extraBreak
 
   const whiteStart = actualStart
-  let whiteFinish, whiteHours, orangeStart, orangeFinish, orangeMins, orangeHours, totalHours
 
-  if (hasFullWhite) {
-    whiteFinish = addMins(actualStart, WHITE_WINDOW)
-    whiteHours = '8:00'
-    orangeStart = whiteFinish
-    orangeFinish = actualFinish
-    orangeMins = Math.max(0, toMins(actualFinish) - toMins(orangeStart) - extraBreak)
-    orangeHours = toHHMM(orangeMins)
-    totalHours = toHHMM(480 + orangeMins)
-  } else {
-    whiteFinish = actualFinish
-    whiteHours = toHHMM(Math.max(0, workedMins - totalBreak))
-    orangeStart = actualFinish
-    orangeFinish = actualFinish
-    orangeMins = 0
-    orangeHours = '0:00'
-    totalHours = whiteHours
+  if (workedMins <= WHITE_WINDOW) {
+    const whiteHours = toHHMM(Math.max(0, workedMins - totalBreak))
+    return {
+      white_start: whiteStart,
+      white_finish: actualFinish,
+      white_hours: whiteHours,
+      extra_break: toHHMM(extraBreak),
+      orange_start: actualFinish,
+      orange_finish: actualFinish,
+      orange_hours: '0:00',
+      orange_break: toHHMM(extraBreak),
+      total_hours: whiteHours
+    }
   }
+
+  const whiteFinish = addMins(actualStart, WHITE_WINDOW)
+  const orangeStart = whiteFinish
+  const orangeMins = Math.max(0, toMins(actualFinish) - toMins(orangeStart) - extraBreak)
+  const orangeHours = toHHMM(orangeMins)
+  const totalHours = toHHMM(480 + orangeMins)
 
   return {
     white_start: whiteStart,
     white_finish: whiteFinish,
-    white_hours: whiteHours,
+    white_hours: '8:00',
     extra_break: toHHMM(extraBreak),
     orange_start: orangeStart,
-    orange_finish: orangeFinish,
+    orange_finish: actualFinish,
     orange_hours: orangeHours,
     orange_break: toHHMM(extraBreak),
     total_hours: totalHours
@@ -86,7 +86,7 @@ module.exports = async function timesheetRoutes(fastify) {
       return reply.status(400).send({ error: 'Date, start time and finish time are required' })
     }
 
-    const calc = calculate(actual_start, actual_finish, break_mins || 30)
+    const calc = calculate(actual_start, actual_finish, break_mins ?? 0)
 
     const result = await db.query(
       `INSERT INTO timesheet_entries
@@ -103,7 +103,7 @@ module.exports = async function timesheetRoutes(fastify) {
        RETURNING *`,
       [
         request.user.id, entry_date, actual_start, actual_finish,
-        what_work || '', break_mins || 30,
+        what_work || '', break_mins ?? 0,
         calc.white_start, calc.white_finish, calc.white_hours,
         calc.orange_start, calc.orange_finish, calc.orange_hours, calc.total_hours
       ]
