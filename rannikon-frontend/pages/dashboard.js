@@ -49,6 +49,10 @@ function computeEntry(e) {
   }
 }
 
+function hasOrangeWork(entry) {
+  return !!(entry && entry.orange_hours && entry.orange_hours !== '0:00' && entry.orange_hours !== '0:0')
+}
+
 function EditableCell({ value, field, entryDate, onSave, style }) {
   const [editing, setEditing] = React.useState(false)
   const [val, setVal] = React.useState(value || '')
@@ -313,11 +317,11 @@ export default function Dashboard() {
             <tbody>
               <tr>
                 <td style={tdO()}><b>{day}</b></td>
-                <td style={tdO()}>{entry.orange_start?.slice(0,5)}</td>
-                <td style={tdO()}>{entry.orange_finish?.slice(0,5)}</td>
-                <td style={tdO({ textAlign: 'center' })}>{entry.orange_break || '0:00'}</td>
-                <td style={tdO({ fontWeight: '700', color: '#b45309' })}>{entry.orange_hours}</td>
-                <td style={tdO()}>{entry.what_work}</td>
+                <td style={tdO()}>{hasOrangeWork(entry) ? entry.orange_start?.slice(0,5) : ''}</td>
+                <td style={tdO()}>{hasOrangeWork(entry) ? entry.orange_finish?.slice(0,5) : ''}</td>
+                <td style={tdO({ textAlign: 'center' })}>{hasOrangeWork(entry) ? (entry.orange_break || '0:00') : ''}</td>
+                <td style={tdO({ fontWeight: '700', color: hasOrangeWork(entry) ? '#b45309' : '' })}>{hasOrangeWork(entry) ? entry.orange_hours : ''}</td>
+                <td style={tdO()}>{hasOrangeWork(entry) ? entry.what_work : ''}</td>
                 <td style={tdO()}></td>
               </tr>
             </tbody>
@@ -501,14 +505,15 @@ export default function Dashboard() {
                   <tbody>
                     {Array.from({ length: days }, (_, i) => i + 1).map(day => {
                       const entry = entries[day]
+                      const hasOrange = hasOrangeWork(entry)
                       return (
-                        <tr key={day} style={{ background: entry ? '#fff8e1' : '#fffbf0' }}>
+                        <tr key={day} style={{ background: hasOrange ? '#fff8e1' : '#fffbf0' }}>
                           <td style={tdO()}><b>{day}</b></td>
-                          <td style={tdO()}>{entry ? <EditableCell value={entry.orange_start?.slice(0,5)} field="orange_start" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
-                          <td style={tdO()}>{entry ? <EditableCell value={entry.orange_finish?.slice(0,5)} field="orange_finish" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
-                          <td style={tdO({ textAlign: 'center' })}>{entry ? (entry.orange_break || '0:00') : ''}</td>
-                          <td style={tdO({ fontWeight: '700', color: entry ? '#b45309' : '' })}>{entry ? <EditableCell value={entry.orange_hours} field="orange_hours" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
-                          <td style={tdO()}>{entry ? <EditableCell value={entry.what_work} field="what_work" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
+                          <td style={tdO()}>{hasOrange ? <EditableCell value={entry.orange_start?.slice(0,5)} field="orange_start" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
+                          <td style={tdO()}>{hasOrange ? <EditableCell value={entry.orange_finish?.slice(0,5)} field="orange_finish" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
+                          <td style={tdO({ textAlign: 'center' })}>{hasOrange ? (entry.orange_break || '0:00') : ''}</td>
+                          <td style={tdO({ fontWeight: '700', color: hasOrange ? '#b45309' : '' })}>{hasOrange ? <EditableCell value={entry.orange_hours} field="orange_hours" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
+                          <td style={tdO()}>{hasOrange ? <EditableCell value={entry.what_work} field="what_work" entryDate={year+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0')} onSave={saveField} /> : ''}</td>
                           <td style={tdO()}></td>
                         </tr>
                       )
@@ -739,7 +744,7 @@ export default function Dashboard() {
       doc.setTextColor(0)
       doc.setFontSize(10); doc.setFont('helvetica', 'normal')
       doc.text('Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName, 14, 22)
-      const rows = Array.from({ length: daysCount }, (_, i) => { const d = i+1; const e = entries[d]; return [d, e ? e.orange_start?.slice(0,5) : '', e ? e.orange_finish?.slice(0,5) : '', e ? (e.orange_break || '0:00') : '', e ? e.orange_hours : '', e ? e.what_work : '', ''] })
+      const rows = Array.from({ length: daysCount }, (_, i) => { const d = i+1; const e = entries[d]; const o = hasOrangeWork(e); return [d, o ? e.orange_start?.slice(0,5) : '', o ? e.orange_finish?.slice(0,5) : '', o ? (e.orange_break || '0:00') : '', o ? e.orange_hours : '', o ? e.what_work : '', ''] })
       autoTable(doc, {
         startY: 26,
         head: [['Date','Start','Finish','Break','Hours minus breaks','What work','Signature']],
@@ -840,7 +845,7 @@ export default function Dashboard() {
         ['Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName],
         [],
         ['Date', 'Start', 'Finish', 'Break', 'Hours minus breaks', 'What work', 'Signature'],
-        ...Array.from({ length: daysCount }, (_, i) => { const d = i+1; const e = entries[d]; return [d, e ? e.orange_start?.slice(0,5) : '', e ? e.orange_finish?.slice(0,5) : '', e ? (e.orange_break || '0:00') : '', e ? e.orange_hours : '', e ? e.what_work : '', ''] })
+        ...Array.from({ length: daysCount }, (_, i) => { const d = i+1; const e = entries[d]; const o = hasOrangeWork(e); return [d, o ? e.orange_start?.slice(0,5) : '', o ? e.orange_finish?.slice(0,5) : '', o ? (e.orange_break || '0:00') : '', o ? e.orange_hours : '', o ? e.what_work : '', ''] })
       ]
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), 'Orange Paper')
       XLSX.writeFile(wb, 'orange-paper-' + monthName + '-' + (worker?.work_number || '') + '.xlsx')
