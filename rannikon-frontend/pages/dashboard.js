@@ -33,11 +33,6 @@ function addMins(t, add) {
   const total = toMins(t) + add
   return String(Math.floor(total / 60) % 24).padStart(2, '0') + ':' + String(total % 60).padStart(2, '0')
 }
-function greenHours(ge) {
-  if (!ge?.start_time || !ge?.finish_time) return ''
-  return toHHMM(Math.max(0, toMins(ge.finish_time) - toMins(ge.start_time) - 60))
-}
-
 function computeEntry(e) {
   if (!e?.actual_start || !e?.actual_finish) return e
   const totalBreak = Math.max(0, e.break_mins || 0)
@@ -391,7 +386,7 @@ export default function Dashboard() {
                 <td style={tdG()}>{ge?.finish_time?.slice(0,5)}</td>
                 <td style={tdG({ textAlign: 'center' })}>1 hour</td>
                 <td style={tdG({ textAlign: 'center' })}></td>
-                <td style={tdG({ fontWeight: '700', color: '#2d6a2d' })}>{greenHours(ge)}</td>
+                <td style={tdG()}></td>
                 <td style={tdG()}>{ge?.what_picked}</td>
                 <td style={tdG({ fontWeight: '700', color: '#2d6a2d' })}>{ge?.kg_picked != null ? ge.kg_picked : ''}</td>
               </tr>
@@ -682,7 +677,7 @@ export default function Dashboard() {
                           <td style={tdG()}><EditableCell value={ge?.finish_time?.slice(0,5)} field="finish_time" entryDate={dateStr} onSave={saveGreenField} /></td>
                           <td style={tdG({ textAlign: 'center', color: '#888' })}>1 hour</td>
                           <td style={tdG({ textAlign: 'center' })}></td>
-                          <td style={tdG({ fontWeight: '700', color: ge ? '#2d6a2d' : '' })}>{greenHours(ge)}</td>
+                          <td style={tdG()}></td>
                           <td style={tdG()}><EditableCell value={ge?.what_picked} field="what_picked" entryDate={dateStr} onSave={saveGreenField} /></td>
                           <td style={tdG({ fontWeight: '700', color: ge?.kg_picked ? '#2d6a2d' : '' })}><EditableCell value={ge?.kg_picked != null ? String(ge.kg_picked) : ''} field="kg_picked" entryDate={dateStr} onSave={saveGreenField} /></td>
                         </tr>
@@ -804,7 +799,7 @@ export default function Dashboard() {
       doc.setTextColor(0)
       doc.setFontSize(10); doc.setFont('helvetica', 'normal')
       doc.text('Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName, 14, 22)
-      const rows = Array.from({ length: daysCount }, (_, i) => { const d = i+1; const ge = greenEntries[d]; return [d, ge?.start_time?.slice(0,5) || '', ge?.finish_time?.slice(0,5) || '', '1 hour', '', greenHours(ge), ge?.what_picked || '', ge?.kg_picked != null ? ge.kg_picked : ''] })
+      const rows = Array.from({ length: daysCount }, (_, i) => { const d = i+1; const ge = greenEntries[d]; return [d, ge?.start_time?.slice(0,5) || '', ge?.finish_time?.slice(0,5) || '', '1 hour', '', '', ge?.what_picked || '', ge?.kg_picked != null ? ge.kg_picked : ''] })
       autoTable(doc, {
         startY: 26,
         head: [['Date','Start','Finish','Eating break','Extra breaks','Hours minus breaks','What was picked up','Kg picked']],
@@ -880,7 +875,7 @@ export default function Dashboard() {
         ['Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName],
         [],
         ['Date', 'Start', 'Finish', 'Eating break', 'Extra breaks', 'Hours minus breaks', 'What was picked up', 'Kg picked'],
-        ...Array.from({ length: daysCount }, (_, i) => { const d = i+1; const ge = greenEntries[d]; return [d, ge?.start_time?.slice(0,5) || '', ge?.finish_time?.slice(0,5) || '', '1 hour', '', greenHours(ge), ge?.what_picked || '', ge?.kg_picked != null ? ge.kg_picked : ''] })
+        ...Array.from({ length: daysCount }, (_, i) => { const d = i+1; const ge = greenEntries[d]; return [d, ge?.start_time?.slice(0,5) || '', ge?.finish_time?.slice(0,5) || '', '1 hour', '', '', ge?.what_picked || '', ge?.kg_picked != null ? ge.kg_picked : ''] })
       ]
       XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), 'Green Paper')
       XLSX.writeFile(wb, 'green-paper-' + monthName + '-' + (worker?.work_number || '') + '.xlsx')
@@ -1055,7 +1050,7 @@ export default function Dashboard() {
                               </div>
                               <div style={{ flex: 2, minWidth: '180px' }}>
                                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '4px' }}>What was picked</label>
-                                <input style={inp} placeholder="e.g. blueberries" value={greenForm.what} onChange={e => setGreenForm({...greenForm, what: e.target.value})} />
+                                <input style={inp} placeholder="e.g. strawberries" value={greenForm.what} onChange={e => setGreenForm({...greenForm, what: e.target.value})} />
                               </div>
                             </div>
                           </div>
