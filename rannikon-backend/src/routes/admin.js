@@ -260,4 +260,14 @@ module.exports = async function adminRoutes(fastify) {
     return reply.send({ worklogs: result.rows })
   })
 
+  fastify.delete('/api/admin/housemaster-worklogs/:id', { onRequest: [fastify.authenticate] }, async (request, reply) => {
+    const worker = await db.query('SELECT role FROM workers WHERE id = $1', [request.user.id])
+    const w = worker.rows[0]
+    if (!w || !['housemaster', 'admin'].includes(w.role)) {
+      return reply.status(403).send({ error: 'Access denied' })
+    }
+    await db.query('DELETE FROM housemaster_worklogs WHERE id = $1', [request.params.id])
+    return reply.send({ success: true })
+  })
+
 }
