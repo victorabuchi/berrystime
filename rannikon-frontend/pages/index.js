@@ -214,7 +214,7 @@ export default function Home() {
   const [activeFeature, setActiveFeature] = useState(0)
 
   useEffect(() => {
-    const t = setInterval(() => setActiveFeature(s => (s + 1) % 4), 3000)
+    const t = setInterval(() => setActiveFeature(s => (s + 1) % 5), 3000)
     return () => clearInterval(t)
   }, [])
 
@@ -243,7 +243,7 @@ export default function Home() {
         </svg>
       ),
       title: 'Calculate hours instantly',
-      desc: 'Enter actual start and finish time. All paper forms filled automatically.'
+      desc: 'Enter start, finish and break — papers auto-fill instantly.'
     },
     {
       icon: (
@@ -251,38 +251,47 @@ export default function Home() {
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
         </svg>
       ),
-      title: 'Track the full month',
-      desc: 'See all 31 days in one view. Add, edit, and save each working day.'
+      title: 'Full monthly timesheet',
+      desc: '31-day view with all your entries in one place.'
     },
     {
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /><line x1="2" y1="20" x2="22" y2="20" />
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
         </svg>
       ),
-      title: 'Weekly summary auto-built',
-      desc: 'Your weekly totals calculate automatically as you add daily entries.'
+      title: 'Download papers as PDF or Excel',
+      desc: 'White paper, orange paper, weekly summary and green paper — ready to print or share.'
     },
     {
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+          <path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4a2 2 0 001-1.73V8z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" />
         </svg>
       ),
-      title: 'Submit forms to supervisor',
-      desc: 'Submit your completed forms directly to your supervisor for review and approval.'
+      title: 'Berry picking tracking',
+      desc: 'Log the kilos picked each day on the green paper.'
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+        </svg>
+      ),
+      title: 'Edit any value',
+      desc: 'Tap any cell to correct it directly — no need to start over.'
     },
   ]
 
-  const staffFeatures = [
+  const supervisorFeatures = [
     {
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
         </svg>
       ),
-      title: 'View all workers',
-      desc: "See every worker's timesheet in one admin panel."
+      title: 'Record worker batches',
+      desc: 'Enter multiple worker numbers at once with one shared start time.'
     },
     {
       icon: (
@@ -290,8 +299,8 @@ export default function Home() {
           <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
         </svg>
       ),
-      title: 'Record workers time automatically',
-      desc: "Workers' hours are auto-calculated and recorded directly in the system."
+      title: 'Track breaks automatically',
+      desc: 'Add breaks throughout the day — the system totals them for you.'
     },
     {
       icon: (
@@ -299,17 +308,113 @@ export default function Home() {
           <polyline points="20 6 9 17 4 12" />
         </svg>
       ),
-      title: 'Verify hours',
-      desc: 'Approve working hours before they go to payroll.'
+      title: 'Set finish time per batch',
+      desc: 'One tap fills the finish time for every worker in that batch.'
     },
     {
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+        </svg>
+      ),
+      title: 'Auto-fill worker timesheets',
+      desc: 'Workers see their hours already calculated when they log in.'
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      ),
+      title: 'Send worklog to admin',
+      desc: 'One tap sends the full day report by email.'
+    },
+  ]
+
+  const adminFeatures = [
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+        </svg>
+      ),
+      title: 'View all workers',
+      desc: 'Search and manage every worker account in one place.'
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
+        </svg>
+      ),
+      title: 'Sort supervisor logs by group',
+      desc: 'Kivilinna/Salo, Karton Cambodia, Karton International, Vassila, Suppala, Salo/Turku.'
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      ),
+      title: 'Send worklogs to housemasters',
+      desc: "One tap sends the daily worklog to each group's housemaster."
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" /><circle cx="8.5" cy="7" r="4" /><line x1="20" y1="8" x2="20" y2="14" /><line x1="23" y1="11" x2="17" y2="11" />
+        </svg>
+      ),
+      title: 'Invite anyone',
+      desc: 'Send invitation emails with a role already assigned.'
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" /><line x1="2" y1="20" x2="22" y2="20" />
+        </svg>
+      ),
+      title: 'Full statistics',
+      desc: 'Workers, entries, supervisors and housemasters at a glance.'
+    },
+  ]
+
+  const housemasterFeatures = [
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ce93d8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 12h-6l-2 3h-4l-2-3H2" /><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z" />
+        </svg>
+      ),
+      title: 'Receive group worklogs',
+      desc: 'The admin sends worklogs directly to your account.'
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ce93d8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
         </svg>
       ),
-      title: 'Export reports',
-      desc: 'Download reports for the housemaster and payroll team.'
+      title: 'Download as PDF or Excel',
+      desc: 'Clean, formatted worklog ready to share or print.'
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ce93d8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+        </svg>
+      ),
+      title: 'Share to Facebook or WhatsApp',
+      desc: 'One tap shares a formatted summary, ready to post.'
+    },
+    {
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ce93d8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+        </svg>
+      ),
+      title: 'Delete worklogs',
+      desc: 'Remove outdated records you no longer need.'
     },
   ]
 
@@ -343,7 +448,7 @@ export default function Home() {
         .footer-newsletter-input:focus{outline:none;border-color:#388e3c!important}
         @media(max-width:768px){
           .hero-grid{flex-direction:column!important}
-          .features-grid{flex-direction:column!important}
+          .features-grid{grid-template-columns:1fr!important}
           .nav-links{display:none!important}
           .hero-visual{display:flex!important;justify-content:center;margin-top:36px}
           .footer-cols{flex-direction:column!important;gap:32px!important}
@@ -419,13 +524,13 @@ export default function Home() {
         <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '52px' }}>
             <h2 style={{ fontSize: 'clamp(22px,4vw,40px)', fontWeight: '800', letterSpacing: '-0.8px', marginBottom: '10px' }}>Built for everyone at the farm</h2>
-            <p style={{ fontSize: '16px', color: '#666', maxWidth: '440px', margin: '0 auto', lineHeight: '1.6' }}>Whether you pick berries or manage the team, Rannikon has you covered</p>
+            <p style={{ fontSize: '16px', color: '#666', maxWidth: '440px', margin: '0 auto', lineHeight: '1.6' }}>Workers, supervisors, admins and housemasters — each role has its own dedicated tools</p>
           </div>
 
-          <div className="features-grid" style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+          <div className="features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
 
             {/* Workers */}
-            <div style={{ flex: '1', background: '#fafaf8', border: '1px solid #e8e8e3', borderRadius: '20px', padding: '32px', minWidth: '280px' }}>
+            <div style={{ background: '#fafaf8', border: '1px solid #e8e8e3', borderRadius: '20px', padding: '32px' }}>
               <div style={{ width: '44px', height: '44px', background: '#e8f5e9', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2d6a2d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" />
@@ -449,21 +554,16 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Divider */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 4px', alignSelf: 'center' }}>
-              <span style={{ fontFamily: "'Dancing Script', cursive", fontWeight: '700', fontSize: '28px', color: '#2d6a2d', opacity: 0.55, whiteSpace: 'nowrap' }}>and</span>
-            </div>
-
             {/* Supervisors */}
-            <div style={{ flex: '1', background: '#1a1a18', border: '1px solid #333', borderRadius: '20px', padding: '32px', minWidth: '280px' }}>
+            <div style={{ background: '#1a1a18', border: '1px solid #333', borderRadius: '20px', padding: '32px' }}>
               <div style={{ width: '44px', height: '44px', background: 'rgba(255,255,255,0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
                 </svg>
               </div>
               <h3 style={{ fontSize: '20px', fontWeight: '800', letterSpacing: '-0.3px', marginBottom: '20px', color: '#fff' }}>For supervisors</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
-                {staffFeatures.map((f, i) => (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {supervisorFeatures.map((f, i) => (
                   <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                     <div style={{ width: '32px', height: '32px', background: 'rgba(45,106,45,0.25)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{f.icon}</div>
                     <div>
@@ -473,8 +573,47 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '12px 16px', textAlign: 'center' }}>
-                <span style={{ fontSize: '13px', color: '#888', fontWeight: '500' }}>Admin panel (coming soon)</span>
+            </div>
+
+            {/* Admins */}
+            <div style={{ background: '#fafaf8', border: '1px solid #e8e8e3', borderRadius: '20px', padding: '32px' }}>
+              <div style={{ width: '44px', height: '44px', background: '#e3f2fd', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1565c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z" />
+                </svg>
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: '800', letterSpacing: '-0.3px', marginBottom: '20px' }}>For admins</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {adminFeatures.map((f, i) => (
+                  <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <div style={{ width: '32px', height: '32px', background: '#e3f2fd', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{f.icon}</div>
+                    <div>
+                      <div style={{ fontSize: '14px', fontWeight: '600', color: '#1a1a18', marginBottom: '3px' }}>{f.title}</div>
+                      <div style={{ fontSize: '12px', color: '#777', lineHeight: '1.4' }}>{f.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Housemasters */}
+            <div style={{ background: '#1a1a18', border: '1px solid #333', borderRadius: '20px', padding: '32px' }}>
+              <div style={{ width: '44px', height: '44px', background: 'rgba(123,31,162,0.25)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ce93d8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+              </div>
+              <h3 style={{ fontSize: '20px', fontWeight: '800', letterSpacing: '-0.3px', marginBottom: '20px', color: '#fff' }}>For housemasters</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {housemasterFeatures.map((f, i) => (
+                  <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <div style={{ width: '32px', height: '32px', background: 'rgba(123,31,162,0.25)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{f.icon}</div>
+                    <div>
+                      <div style={{ fontSize: '14px', fontWeight: '600', color: '#fff', marginBottom: '3px' }}>{f.title}</div>
+                      <div style={{ fontSize: '12px', color: '#888', lineHeight: '1.4' }}>{f.desc}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
