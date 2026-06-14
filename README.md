@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="berrystime-frontend/public/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" width="90" height="90" />
+  <img src="rannikon-frontend/public/rannikkopuutarhalogo.png" alt="Rannikon Puutarha" width="90" height="90" />
   <h3>Rannikon: Berrystime</h3>
   <p><strong>Farm worker timesheet and payroll paper platform.</strong><br/>Log hours, auto-calculate white, orange, green and weekly summary papers, download as PDF or Excel.</p>
   <p>
