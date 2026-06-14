@@ -346,6 +346,12 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
+              <tr style={{ background: '#e8f5e9' }}>
+                <td style={tdG({ textAlign: 'left', fontWeight: '700' })}>Berry picking (kg)</td>
+                <td style={tdG()}></td><td style={tdG()}></td><td style={tdG()}></td><td style={tdG()}></td><td style={tdG()}></td><td style={tdG()}></td>
+                <td style={tdG({ color: '#999' })}>X</td>
+                <td style={tdG({ fontWeight: '700', color: '#2d6a2d' })}>{ge?.kg_picked != null ? ge.kg_picked : ''}</td>
+              </tr>
               <tr>
                 <td style={tdB({ textAlign: 'left', fontWeight: '600' })}>Working hours (max 8)</td>
                 <td style={tdB()}></td><td style={tdB()}></td><td style={tdB()}></td><td style={tdB()}></td><td style={tdB()}></td><td style={tdB()}></td>
@@ -555,6 +561,11 @@ export default function Dashboard() {
                   const p = entries[x.d].orange_hours.split(':')
                   return sum + parseInt(p[0]) * 60 + parseInt(p[1])
                 }, 0)
+                const totalKg = validDays.reduce((sum, x) => {
+                  if (x.isSun) return sum
+                  const ge = greenEntries[x.d]
+                  return ge?.kg_picked != null ? sum + (Number(ge.kg_picked) || 0) : sum
+                }, 0)
                 const thW2 = (extra) => ({ border: '1px solid #333', padding: '5px 6px', textAlign: 'center', background: '#e0e0e0', fontSize: '11px', fontWeight: '700', ...extra })
                 const tdW2 = (extra) => ({ border: '1px solid #333', padding: '5px 6px', fontSize: '11px', textAlign: 'center', ...extra })
                 const tdO2 = (extra) => ({ border: '1px solid #c97d00', padding: '5px 6px', fontSize: '11px', textAlign: 'center', background: '#fffbf0', ...extra })
@@ -579,19 +590,20 @@ export default function Dashboard() {
                           </tr>
                         </thead>
                         <tbody>
-                          {/* Green row — pickup hours */}
+                          {/* Green row — berry picking (kg) */}
                           <tr>
                             <td style={tdG2({ textAlign: 'left', fontWeight: '700', color: '#2d6a2d', background: '#e8f5e9' })}>
                               <span style={{ display: 'inline-block', width: '9px', height: '9px', background: '#2d6a2d', borderRadius: '2px', marginRight: '5px', verticalAlign: 'middle' }}/>
-                              pickup hours
+                              Berry picking (kg)
                             </td>
                             {dayInfos.map(({ d, isSun, exists }) => (
                               <td key={d} style={tdG2({ color: isSun ? '#bbb' : '#2d6a2d', background: '#e8f5e9', fontWeight: '700' })}>
-                                {isSun ? 'X' : ''}
+                                {isSun ? 'X' : (greenEntries[d]?.kg_picked != null ? greenEntries[d].kg_picked : '')}
                               </td>
                             ))}
                             <td style={tdG2({ fontWeight: '700', color: '#2d6a2d', background: '#e8f5e9' })}>
-                              <div style={{ fontSize: '9px', color: '#888', fontWeight: '400' }}>max 40</div>
+                              {totalKg > 0 ? Math.round(totalKg * 100) / 100 : ''}
+                              <div style={{ fontSize: '9px', color: '#888', fontWeight: '400' }}>kg</div>
                             </td>
                           </tr>
                           {/* White row — working hours */}
@@ -769,6 +781,7 @@ export default function Dashboard() {
         const wd = Array.from({length:7},(_,i)=>ws+i).filter(d=>d<=daysCount)
         const tw = wd.reduce((s,d)=>{ if(!entries[d]?.white_hours) return s; const p=entries[d].white_hours.split(':'); return s+parseInt(p[0])*60+parseInt(p[1]) },0)
         const te = wd.reduce((s,d)=>{ if(!entries[d]?.orange_hours) return s; const p=entries[d].orange_hours.split(':'); return s+parseInt(p[0])*60+parseInt(p[1]) },0)
+        const tk = wd.reduce((s,d)=>{ const ge=greenEntries[d]; return ge?.kg_picked != null ? s+(Number(ge.kg_picked)||0) : s },0)
         const startY = wi===0 ? 30 : (doc.lastAutoTable?.finalY||30)+10
         doc.setFontSize(9); doc.setFont('helvetica', 'bold')
         doc.setTextColor(0)
@@ -777,7 +790,7 @@ export default function Dashboard() {
           startY,
           head: [['', ...wd.map(d=>'Day '+d), ...Array(7-wd.length).fill(''), 'Total']],
           body: [
-            ['pickup hours', ...wd.map(()=>''), ...Array(7-wd.length).fill(''), ''],
+            ['Berry picking (kg)', ...wd.map(d=>{ const ge=greenEntries[d]; return ge?.kg_picked != null ? ge.kg_picked : '' }), ...Array(7-wd.length).fill(''), tk > 0 ? Math.round(tk*100)/100 : ''],
             ['working hrs', ...wd.map(d=>entries[d]?(entries[d].white_hours||'8:00'):''), ...Array(7-wd.length).fill(''), toHHMM(tw)],
             ['extra hrs', ...wd.map(d=>entries[d]?entries[d].orange_hours:''), ...Array(7-wd.length).fill(''), toHHMM(te)],
             ['yes, I want to work extra hours   Signature: _______________________', ...Array(8).fill('')]
@@ -857,13 +870,14 @@ export default function Dashboard() {
         const wd = Array.from({length:7},(_,i)=>ws+i).filter(d=>d<=daysCount)
         const tw = wd.reduce((s,d)=>{ if(!entries[d]?.white_hours) return s; const p=entries[d].white_hours.split(':'); return s+parseInt(p[0])*60+parseInt(p[1]) },0)
         const te = wd.reduce((s,d)=>{ if(!entries[d]?.orange_hours) return s; const p=entries[d].orange_hours.split(':'); return s+parseInt(p[0])*60+parseInt(p[1]) },0)
+        const tk = wd.reduce((s,d)=>{ const ge=greenEntries[d]; return ge?.kg_picked != null ? s+(Number(ge.kg_picked)||0) : s },0)
         const data = [
           wi === 0 ? ['WEEKLY SUMMARY'] : [],
           wi === 0 ? ['Name: ' + (worker?.full_name || '') + '   Work number: ' + (worker?.work_number || '') + '   ' + monthName] : [],
           wi === 0 ? [] : [],
           ['Week ' + (wi+1)],
           ['', ...wd.map(d=>'Day '+d), ...Array(7-wd.length).fill(''), 'Total'],
-          ['pickup hours', ...wd.map(()=>''), ...Array(7-wd.length).fill(''), ''],
+          ['Berry picking (kg)', ...wd.map(d=>{ const ge=greenEntries[d]; return ge?.kg_picked != null ? ge.kg_picked : '' }), ...Array(7-wd.length).fill(''), tk > 0 ? Math.round(tk*100)/100 : ''],
           ['working hrs', ...wd.map(d=>entries[d]?(entries[d].white_hours||'8:00'):''), ...Array(7-wd.length).fill(''), toHHMM(tw)],
           ['extra hrs', ...wd.map(d=>entries[d]?entries[d].orange_hours:''), ...Array(7-wd.length).fill(''), toHHMM(te)],
           ['yes, I want to work extra hours   Signature: _______________________'],
